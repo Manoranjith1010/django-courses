@@ -1,0 +1,82 @@
+{% extends 'base_lecture.html' %}
+
+
+{% block title %}
+{{ course.course_title }} | EDU
+{% endblock title %}
+
+{% block meta %}
+    <meta name="description" content="{{ course.seo_course_description }}">
+    <meta name="keywords" content="{{ course.seo_course_keywords }}">
+{% endblock meta %}
+
+{% block content %}
+    <div class="row g-0">
+    
+    {% comment %} Lecture Sidebar Goes Here {% endcomment %}
+    {% include 'partials/_lecture_sidebar.html' %}
+
+
+    <main role="main" class="col-md-9 col-lg-10">
+
+        {% if first_lecture %}
+            {% for lecture_selected in first_lecture %}
+    
+                <!-- Full-width video section -->
+                {% if lecture_selected.lecture_file %}
+                    <div class="bg-dark">
+                        <video controls class="w-100" preload="metadata" style="max-height: 70vh; background: #000;">
+                            <source src="{{ lecture_selected.lecture_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                {% endif %}
+
+                <div class="p-4">
+                    <div class="d-flex justify-content-between flex-wrap align-items-center mb-3">
+                        <h1 class="h4 mb-0">{{ lecture_selected.lecture_title }}</h1>
+                        {% if lecture_selected.lecture_file %}
+                        <a href="{{ lecture_selected.lecture_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Download
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    {% if not lecture_selected.lecture_file %}
+                        <div class="alert alert-warning">Video file is not available for this lecture.</div>
+                    {% endif %}
+
+                    {% if lecture_selected.lecture_description %}
+                    <div class="card border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="text-muted mb-2">Description</h6>
+                            <p class="mb-0">{{ lecture_selected.lecture_description }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            
+            {% endfor %}
+
+            {% else %}
+
+            <!-- Engaging empty state -->
+            <div class="d-flex flex-column align-items-center justify-content-center py-5">
+                <div class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="text-muted mb-3" viewBox="0 0 16 16">
+                        <path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+                    </svg>
+                    <h5 class="mb-2">No lectures yet</h5>
+                    <p class="text-muted mb-4">Content is being prepared. Check back soon!</p>
+                    <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+                </div>
+            </div>
+
+        {% endif %}
+
+
+    </main>
+
+
+  </div>
+{% endblock content %}

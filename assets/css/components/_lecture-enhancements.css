@@ -1,0 +1,535 @@
+/* =============================================================================
+   Lecture Page Enhancements
+   Premium UI improvements for video player, sidebar, modals, buttons, and progress
+   ============================================================================= */
+
+/* =============================================================================
+   1. VIDEO CONTAINER - Premium styling
+   ============================================================================= */
+
+.video-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: var(--gray-900);
+    margin-bottom: var(--space-6);
+}
+
+.video-wrapper video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.video-card {
+    padding: var(--space-6);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.video-card .video-wrapper {
+    margin-bottom: 0;
+}
+
+/* Video controls overlay styling */
+.video-wrapper video::-webkit-media-controls-panel {
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+}
+
+/* =============================================================================
+   2. SIDEBAR - Modern SaaS styling
+   ============================================================================= */
+
+/* Base sidebar enhancements */
+.sidebar.lecture-sidebar,
+.sidebar.sidebar-saas {
+    background: #f8f9fb;
+    border-right: 1px solid var(--gray-100);
+}
+
+/* Lecture sidebar items with smooth transitions */
+.sidebar-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    margin: var(--space-1) 0;
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-item:hover {
+    background: rgba(102, 126, 234, 0.08);
+    color: var(--text-primary);
+    transform: translateX(2px);
+}
+
+/* Active state with indicator bar */
+.sidebar-item.active {
+    background: #2563eb;
+    color: white;
+    border-left-color: transparent;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.sidebar-item.active:hover {
+    background: #1d4ed8;
+    color: white;
+}
+
+/* Active indicator bar (left side) */
+.sidebar-item.active::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--primary-gradient);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* Completed state */
+.sidebar-item.completed {
+    color: var(--success-solid);
+}
+
+.sidebar-item.completed:not(.active):hover {
+    background: rgba(72, 187, 120, 0.1);
+}
+
+/* Lecture number badge */
+.sidebar-item .lecture-number {
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.sidebar-item.active .lecture-number {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.sidebar-item.completed .lecture-number {
+    background: var(--success-solid);
+    color: white;
+}
+
+/* Bootstrap sidebar override for lectures */
+.nav-link.sidebar-nav-item {
+    position: relative;
+    padding: var(--space-3) var(--space-4);
+    margin: var(--space-1) 0;
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.nav-link.sidebar-nav-item:hover {
+    background: rgba(102, 126, 234, 0.08);
+    color: var(--primary-solid);
+}
+
+.nav-link.sidebar-nav-item.active {
+    background: #2563eb !important;
+    color: white !important;
+    border-left-color: transparent;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* =============================================================================
+   3. COMPLETION MODAL - Premium centered modal with blur and confetti
+   ============================================================================= */
+
+/* Modal backdrop with blur */
+.completion-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: var(--z-modal-backdrop);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Centered modal card */
+.completion-modal {
+    background: var(--surface-elevated);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-10);
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+    box-shadow: var(--shadow-2xl);
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.completion-modal h2 {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-3);
+}
+
+.completion-modal p {
+    color: var(--text-secondary);
+    font-size: var(--text-base);
+    margin-bottom: var(--space-6);
+}
+
+/* Trophy/celebration icon */
+.completion-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-6);
+    background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+    animation: pulse 2s infinite;
+}
+
+/* Modal buttons */
+.completion-modal .modal-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Confetti animation */
+.confetti-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    animation: confetti-fall 3s ease-in-out infinite;
+}
+
+.confetti:nth-child(1) { left: 10%; animation-delay: 0s; background: #ff6b6b; }
+.confetti:nth-child(2) { left: 20%; animation-delay: 0.2s; background: #4ecdc4; }
+.confetti:nth-child(3) { left: 30%; animation-delay: 0.4s; background: #ffe66d; }
+.confetti:nth-child(4) { left: 40%; animation-delay: 0.6s; background: #95e1d3; }
+.confetti:nth-child(5) { left: 50%; animation-delay: 0.8s; background: #a8e6cf; }
+.confetti:nth-child(6) { left: 60%; animation-delay: 1s; background: #ffd93d; }
+.confetti:nth-child(7) { left: 70%; animation-delay: 1.2s; background: #6c5ce7; }
+.confetti:nth-child(8) { left: 80%; animation-delay: 1.4s; background: #fd79a8; }
+.confetti:nth-child(9) { left: 90%; animation-delay: 1.6s; background: #00cec9; }
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-100%) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(400px) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* =============================================================================
+   4. BUTTON HIERARCHY - Clear visual distinction
+   ============================================================================= */
+
+/* Primary Button - Continue (Solid Blue) */
+.btn-continue,
+.btn.btn-continue {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: var(--space-3) var(--space-6);
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-continue:hover,
+.btn.btn-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    color: white;
+}
+
+/* Secondary Button - Leave Review (Outline) */
+.btn-review,
+.btn.btn-review {
+    background: transparent;
+    color: var(--primary-solid);
+    border: 2px solid var(--primary-solid);
+    padding: var(--space-3) var(--space-6);
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+}
+
+.btn-review:hover,
+.btn.btn-review:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+/* Success Button - Complete (Green with icon) */
+.btn-complete,
+.btn.btn-complete {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: var(--space-3) var(--space-6);
+    font-weight: 600;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.btn-complete:hover,
+.btn.btn-complete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    color: white;
+}
+
+.btn-complete svg,
+.btn-complete i {
+    width: 18px;
+    height: 18px;
+}
+
+/* Navigation buttons styling */
+.lecture-nav-btn {
+    min-width: 120px;
+    transition: all 0.3s ease;
+}
+
+.lecture-nav-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* =============================================================================
+   5. PROGRESS BAR - Animated with percentage overlay
+   ============================================================================= */
+
+/* Animated progress bar container */
+.progress-animated {
+    position: relative;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: var(--radius-full);
+    overflow: visible;
+}
+
+.progress-animated .progress-bar {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease-in-out;
+    position: relative;
+    background: var(--success-gradient);
+}
+
+/* Progress glow effect */
+.progress-animated .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 30px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4));
+    border-radius: var(--radius-full);
+    animation: progress-shine 1.5s ease-in-out infinite;
+}
+
+@keyframes progress-shine {
+    0% { opacity: 0; transform: translateX(-30px); }
+    50% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(0); }
+}
+
+/* Progress with percentage overlay */
+.progress-with-label {
+    position: relative;
+}
+
+.progress-with-label .progress-animated {
+    height: 24px;
+}
+
+.progress-with-label .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: var(--space-3);
+    min-width: 40px;
+}
+
+.progress-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    color: var(--text-primary);
+    z-index: 1;
+}
+
+.progress-percentage.light {
+    color: white;
+}
+
+/* Sidebar progress enhancement */
+.sidebar-progress .progress-animated {
+    height: 6px;
+}
+
+.sidebar-progress .progress-bar {
+    background: var(--primary-gradient);
+}
+
+/* Course completion percentage display */
+.progress-circle {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-circle svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.progress-circle circle {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.progress-circle .bg {
+    stroke: var(--gray-200);
+}
+
+.progress-circle .progress-ring {
+    stroke: var(--primary-solid);
+    transition: stroke-dashoffset 0.5s ease-in-out;
+}
+
+.progress-circle-value {
+    position: absolute;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+
+/* Fade in animation */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Fade in up animation */
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Celebration banner (legacy support) */
+.celebration-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: var(--space-8);
+    border-radius: var(--radius-xl);
+    text-align: center;
+    box-shadow: var(--shadow-2xl);
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.celebration-banner .confetti {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-4);
+    animation: confetti-bounce 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes confetti-bounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+}

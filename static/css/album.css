@@ -1,0 +1,109 @@
+.jumbotron {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    margin-bottom: 0;
+    background-color: #fff;
+  }
+  @media (min-width: 768px) {
+    .jumbotron {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+  
+  .jumbotron p:last-child {
+    margin-bottom: 0;
+  }
+  
+  .jumbotron h1 {
+    font-weight: 300;
+  }
+  
+  .jumbotron .container {
+    max-width: 40rem;
+  }
+  
+  footer {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  footer p {
+    margin-bottom: .25rem;
+  }
+
+  .course-card-image {
+    width: 100%;
+    height: 225px;
+    object-fit: cover;
+  }
+
+  /* Card hover effects */
+  .card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* Video container */
+  .video-container {
+    background: #000;
+  }
+
+  .video-container video {
+    display: block;
+  }
+
+  /* Sidebar improvements */
+  .sidebar {
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+
+  .sidebar .nav-link {
+    color: #333;
+    font-size: 0.9rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.15s ease-in-out;
+  }
+
+  .sidebar .nav-link:hover {
+    background-color: #f8f9fa;
+  }
+
+  .sidebar .nav-link.active {
+    color: #0d6efd;
+  }
+
+  /* Button improvements */
+  .btn {
+    transition: all 0.15s ease-in-out;
+  }
+
+  /* Alert styling */
+  .alert {
+    border: none;
+    border-radius: 0.5rem;
+  }
+
+  /* Form improvements */
+  .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .course-card-image {
+      height: 180px;
+    }
+    
+    .jumbotron h1 {
+      font-size: 1.75rem;
+    }
+  }
+  

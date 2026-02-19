@@ -1,0 +1,265 @@
+/* =============================================================================
+   Main CSS Entry Point
+   Import all component styles
+   ============================================================================= */
+
+/* Design System (Variables, Base, Utilities) */
+@import url('design-system.css');
+
+/* Components */
+@import url('components/_navbar.css');
+@import url('components/_sidebar.css');
+@import url('components/_hero.css');
+@import url('components/_cards.css');
+@import url('components/_auth.css');
+@import url('components/_lecture-enhancements.css');
+
+/* =============================================================================
+   PAGE-SPECIFIC OVERRIDES
+   ============================================================================= */
+
+/* Dashboard Layout Override */
+.dashboard-page {
+    background: var(--surface-secondary);
+}
+
+.dashboard-page .main-content {
+    padding: var(--space-8);
+}
+
+/* Lecture Page Override */
+.lecture-page .main-content {
+    background: var(--surface-primary);
+}
+
+/* =============================================================================
+   BOOTSTRAP OVERRIDES
+   Customize Bootstrap components to match design system
+   ============================================================================= */
+
+/* Override Bootstrap Primary Color */
+.btn-primary {
+    background: var(--primary-gradient) !important;
+    border: none !important;
+    box-shadow: 0 4px 14px 0 rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px 0 rgba(102, 126, 234, 0.5);
+}
+
+/* Override Bootstrap Cards */
+.card {
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Override Alert Colors */
+.alert-danger {
+    background: rgba(245, 101, 101, 0.1);
+    border-color: rgba(245, 101, 101, 0.2);
+    color: var(--danger-solid);
+}
+
+.alert-success {
+    background: rgba(72, 187, 120, 0.1);
+    border-color: rgba(72, 187, 120, 0.2);
+    color: var(--success-solid);
+}
+
+.alert-warning {
+    background: rgba(236, 201, 75, 0.1);
+    border-color: rgba(236, 201, 75, 0.2);
+    color: #92400e;
+}
+
+/* Override Dropdown */
+.dropdown-menu {
+    border: 1px solid var(--gray-100);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: var(--space-2);
+}
+
+/* Override Modal */
+.modal-content {
+    border: none;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-2xl);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--gray-100);
+}
+
+/* =============================================================================
+   ADDITIONAL UTILITIES
+   ============================================================================= */
+
+/* Section Headings */
+.section-header {
+    margin-bottom: var(--space-8);
+}
+
+.section-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.section-subtitle {
+    font-size: var(--text-base);
+    color: var(--text-muted);
+}
+
+/* Content Containers */
+.container-narrow {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.container-readable {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Spacing Utilities */
+.section-padding {
+    padding: var(--space-16) 0;
+}
+
+.section-padding-sm {
+    padding: var(--space-10) 0;
+}
+
+/* Background Utilities */
+.bg-subtle {
+    background: var(--surface-secondary);
+}
+
+.bg-white {
+    background: var(--surface-primary);
+}
+
+/* Dividers */
+.divider {
+    height: 1px;
+    background: var(--gray-100);
+    margin: var(--space-8) 0;
+}
+
+.divider-vertical {
+    width: 1px;
+    background: var(--gray-200);
+    align-self: stretch;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--space-16) var(--space-4);
+}
+
+.empty-state-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-5);
+    background: var(--gray-100);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-400);
+}
+
+.empty-state-icon svg {
+    width: 40px;
+    height: 40px;
+}
+
+.empty-state-title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-2);
+}
+
+.empty-state-description {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+    max-width: 400px;
+    margin: 0 auto var(--space-6);
+}
+
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: var(--space-6);
+    right: var(--space-6);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface-elevated);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    min-width: 320px;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.toast-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.toast-success .toast-icon {
+    color: var(--success-solid);
+}
+
+.toast-error .toast-icon {
+    color: var(--danger-solid);
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: var(--text-sm);
+}
+
+.toast-message {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+.toast-close {
+    padding: var(--space-1);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.toast-close:hover {
+    background: var(--gray-100);
+    color: var(--text-primary);
+}

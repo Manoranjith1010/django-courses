@@ -1,0 +1,35 @@
+# Media files (large videos)
+media/files/*.mp4
+media/lectures/*.mp4
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Static files (collected)
+staticfiles/
+
+# OS
+.DS_Store
+Thumbs.db

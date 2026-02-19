@@ -1,0 +1,25 @@
+<!-- Clean minimal sidebar -->
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+  <div class="position-sticky pt-4 px-3">
+    <!-- Course title header -->
+    <a class="d-block text-decoration-none mb-4" href="{% url 'lecture' course.course_slug %}">
+      <h6 class="text-dark fw-semibold mb-0">{{ course.course_title|truncatewords:5 }}</h6>
+    </a>
+
+    <!-- Lecture list -->
+    <p class="text-muted small text-uppercase mb-2" style="letter-spacing: 0.05em;">Lectures</p>
+    <ul class="nav flex-column">
+      {% if lectures %}
+        {% for lecture in lectures %}
+          <li class="nav-item">
+            <a class="nav-link px-2 py-2 rounded {% if lecture.id == lecture_selected.id %}active bg-primary text-white{% else %}text-secondary{% endif %}" 
+               href="{% url 'lecture-selected' course.course_slug lecture.lecture_slug %}">
+              <span class="me-2">{% if lecture.id == lecture_selected.id %}&#9658;{% else %}&#9675;{% endif %}</span>
+              {{ lecture.lecture_title|truncatewords:6 }}
+            </a>
+          </li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,67 @@
+{% extends 'base_lecture.html' %}
+
+
+{% block title %}
+{{ course.course_title }} | EDU
+{% endblock title %}
+
+{% block meta %}
+    <meta name="description" content="{{ course.seo_course_description }}">
+    <meta name="keywords" content="{{ course.seo_course_keywords }}">
+{% endblock meta %}
+
+{% block content %}
+    <div class="row g-0">
+
+
+    {% comment %} Lecture Sidebar Goes Here {% endcomment %}
+    {% include 'partials/_lecture_sidebar.html' %}
+
+
+
+    <main role="main" class="col-md-9 col-lg-10">
+
+        {% if lecture_selected %}
+
+                <!-- Full-width video section -->
+                {% if lecture_selected.lecture_file %}
+                    <div class="bg-dark">
+                        <video controls class="w-100" preload="metadata" style="max-height: 70vh; background: #000;">
+                            <source src="{{ lecture_selected.lecture_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                {% endif %}
+
+                <div class="p-4">
+                    <div class="d-flex justify-content-between flex-wrap align-items-center mb-3">
+                        <h1 class="h4 mb-0">{{ lecture_selected.lecture_title }}</h1>
+                        {% if lecture_selected.lecture_file %}
+                        <a href="{{ lecture_selected.lecture_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            Download
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    {% if not lecture_selected.lecture_file %}
+                        <div class="alert alert-warning">Video file is not available for this lecture.</div>
+                    {% endif %}
+
+                    {% if lecture_selected.lecture_description %}
+                    <div class="card border-0 bg-light">
+                        <div class="card-body">
+                            <h6 class="text-muted mb-2">Description</h6>
+                            <p class="mb-0">{{ lecture_selected.lecture_description }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            
+        {% endif %}
+
+
+    </main>
+
+
+  </div>
+{% endblock content %}

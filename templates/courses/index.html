@@ -36,59 +36,71 @@ LaunchDev - Master In-Demand Tech Skills
   </div>
 </section>
 
-<div class="album py-5 bg-mesh-gradient">
+<section class="courses-section bg-mesh-gradient">
   <div class="container">
-    <h2 class="h4 mb-4">Featured Courses</h2>
+    <div class="courses-section__header">
+      <h2 class="courses-section__title">Build Your Web Applications</h2>
+      <p class="courses-section__subtitle">Start your developer journey with industry-leading courses</p>
+    </div>
 
-    <div class="row g-4">
-
+    <div class="courses-grid">
     {% if courses %}
       {% for course in courses %}
-        <div class="col-12 col-sm-6 col-lg-4 d-flex">
-          <div class="card course-card border-0 shadow-sm h-100 w-100 overflow-hidden">
-            <a href="{% url 'courses:course-detail' course.course_slug %}" class="text-decoration-none text-dark">
+        <a href="{% url 'courses:course-detail' course.course_slug %}" class="course-card-modern">
+          <!-- Image Wrapper with Badge -->
+          <div class="course-card-modern__image-wrapper">
             {% if course.course_image %}
-            <div class="overflow-hidden">
-              <img src="{{ course.course_image.url }}" class="card-img-top course-card-image" alt="{{ course.course_title }}">
-            </div>
+            <img src="{{ course.course_image.url }}" 
+                 alt="{{ course.course_title }}" 
+                 class="course-card-modern__image">
             {% else %}
-            <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>{{ course.course_title }}</title><rect width="100%" height="100%" fill="#6c757d"/><text x="50%" y="50%" fill="#fff" dy=".3em">{{ course.course_title|truncatewords:2 }}</text></svg>
+            <div class="course-card-modern__placeholder">
+              {{ course.course_title|truncatewords:1 }}
+            </div>
             {% endif %}
-            </a>
-            <div class="card-body p-3 d-flex flex-column">
-              {% if forloop.first %}
-              <span class="badge bg-warning text-dark course-badge">Featured</span>
-              {% endif %}
-              <h5 class="card-title mb-2">{{ course.course_title }}</h5>
-              <p class="card-text text-muted small mb-3">{{ course.course_description|truncatewords:15|default:"Learn essential skills with hands-on projects and expert guidance." }}</p>
-              <div class="d-flex justify-content-between align-items-center mt-auto">
-                <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-sm btn-primary">View Course</a>
-                <small class="text-muted">{{ course.course_created_at|timesince }} ago</small>
-              </div>
+            
+            <!-- Floating Badge -->
+            {% if forloop.first %}
+            <span class="course-card-modern__badge course-card-modern__badge--featured">Featured</span>
+            {% elif forloop.counter <= 2 %}
+            <span class="course-card-modern__badge course-card-modern__badge--new">New</span>
+            {% else %}
+            <span class="course-card-modern__badge">Free Trial</span>
+            {% endif %}
+          </div>
+          
+          <!-- Card Body -->
+          <div class="course-card-modern__body">
+            <!-- Provider Row -->
+            <div class="course-card-modern__provider">
+              <div class="course-card-modern__provider-logo--placeholder">LD</div>
+              <span class="course-card-modern__provider-name">LaunchDev</span>
+            </div>
+            
+            <!-- Course Title -->
+            <h3 class="course-card-modern__title">{{ course.course_title }}</h3>
+            
+            <!-- Card Footer -->
+            <div class="course-card-modern__footer">
+              <span class="course-card-modern__type">Course</span>
+              <span class="course-card-modern__meta">{{ course.course_created_at|timesince }} ago</span>
             </div>
           </div>
-        </div>
+        </a>
       {% endfor %}
     {% else %}
-      <!-- Engaging Empty State -->
-      <div class="col-12">
-        <div class="text-center py-5">
-          <div class="mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="text-muted" viewBox="0 0 16 16">
-              <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z"/>
-              <path d="M4.5 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"/>
-            </svg>
-          </div>
-          <h4 class="text-dark mb-2">New courses coming soon!</h4>
-          <p class="text-muted mb-4">We're preparing amazing content for you. Check back soon or sign up to get notified.</p>
-          {% if not user.is_authenticated %}
-          <a href="{% url 'account_signup' %}" class="btn btn-primary">Get Notified</a>
-          {% endif %}
-        </div>
+      <!-- Empty State -->
+      <div class="courses-empty-state">
+        <svg class="courses-empty-state__icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <h4 class="courses-empty-state__title">New courses coming soon!</h4>
+        <p class="courses-empty-state__text">We're preparing amazing content for you. Check back soon or sign up to get notified.</p>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'account_signup' %}" class="btn btn-primary">Get Notified</a>
+        {% endif %}
       </div>
     {% endif %}
-      
-
     </div>
 
     {% if page_obj and page_obj.paginator.num_pages > 1 %}

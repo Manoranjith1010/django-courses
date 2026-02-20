@@ -1,7 +1,7 @@
 :root {
   --primary-color: #0d6efd;
-  --brand-primary: #007BFF;
-  --brand-dark: #1A202C;
+  --brand-primary: #2563EB;
+  --brand-dark: #111827;
   --transition-speed: 0.2s;
 }
 
@@ -12,43 +12,48 @@ body {
 
 /* ==========================================================================
    LAUNCHDEV LOGO STYLING
+   Modern two-tone typography logo with Silicon Valley startup aesthetic
    ========================================================================== */
 
 .logo-brand {
-  font-family: 'Poppins', 'Montserrat', 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', 'Poppins', 'Montserrat', system-ui, -apple-system, sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: -0.5px;
   text-decoration: none !important;
   display: inline-flex;
   align-items: center;
+  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
 }
 
 .logo-brand:hover {
   text-decoration: none !important;
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+
+.logo-brand:active {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .logo-launch {
   color: var(--brand-dark);
-  transition: color var(--transition-speed);
 }
 
 .logo-dev {
   color: var(--brand-primary);
-  transition: color var(--transition-speed);
-}
-
-.logo-brand:hover .logo-launch {
-  color: #2D3748;
-}
-
-.logo-brand:hover .logo-dev {
-  color: #0056b3;
 }
 
 /* Footer logo - slightly smaller */
 footer .logo-brand {
   font-size: 1.25rem;
+  font-weight: 700;
+}
+
+footer .logo-brand:hover {
+  transform: none;
+  opacity: 0.9;
 }
 
 /* Navbar styling */

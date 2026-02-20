@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
-from django.db.models import Avg
+from django.db.models import Avg, Count, Q
 from django.utils import timezone
 from .models import Topic, Course, Lecture, Enroll, LectureProgress, Review
 from django.contrib import messages
@@ -27,7 +27,7 @@ def index(request):
     """Homepage with featured courses."""
     courses = (
         Course.objects
-        .filter(course_is_active='Yes', course_is_featured='Yes')
+        .filter(course_is_active=True, course_is_featured=True)
         .only(*COURSE_LIST_FIELDS)
         .prefetch_related('course_topic')
     )
@@ -43,7 +43,7 @@ def courses(request):
     """All courses listing page."""
     courses = (
         Course.objects
-        .filter(course_is_active='Yes')
+        .filter(course_is_active=True)
         .only(*COURSE_LIST_FIELDS)
         .prefetch_related('course_topic')
     )
@@ -60,7 +60,7 @@ def topic_courses(request, topic_slug):
     topic = get_object_or_404(Topic, topic_slug=topic_slug)
     courses = (
         Course.objects
-        .filter(course_is_active='Yes', course_topic=topic)
+        .filter(course_is_active=True, course_topic=topic)
         .only(*COURSE_LIST_FIELDS)
         .prefetch_related('course_topic')
     )
@@ -74,18 +74,22 @@ def topic_courses(request, topic_slug):
 
 
 def search_courses(request):
-    """Search courses by keyword."""
-    keyword = request.GET.get('q', '')
+    """Search courses by keyword using optimized Q objects."""
+    keyword = request.GET.get('q', '').strip()
     
     if keyword:
+        # Optimized search using Q objects - single query
         courses = (
             Course.objects
-            .filter(course_is_active='Yes')
-            .filter(course_title__icontains=keyword) | 
-            Course.objects
-            .filter(course_is_active='Yes')
-            .filter(course_description__icontains=keyword)
-        ).only(*COURSE_LIST_FIELDS).prefetch_related('course_topic').distinct()
+            .filter(
+                Q(course_title__icontains=keyword) | 
+                Q(course_description__icontains=keyword),
+                course_is_active=True
+            )
+            .only(*COURSE_LIST_FIELDS)
+            .prefetch_related('course_topic')
+            .distinct()
+        )
     else:
         courses = Course.objects.none()
     
@@ -320,32 +324,38 @@ def enroll(request, course_id):
 
 @login_required(login_url='account_login')
 def enrolled_courses(request):
-    """List of user's enrolled courses with progress."""
-    enrollments = (
-        Enroll.objects
-        .filter(user=request.user)
-        .select_related('course')
-        .only('id', 'course__id', 'course__course_title', 'course__course_slug', 
-              'course__course_image', 'course__course_description')
-    )
+    """List of user's enrolled courses with progress - optimized to avoid N+1."""
+    # Get all enrolled course IDs for the user
+    enrolled_course_ids = Enroll.objects.filter(
+        user=request.user
+    ).values_list('course_id', flat=True)
     
-    # Calculate progress for each enrolled course
+    # Get courses with lecture counts in a single query
+    courses_with_counts = Course.objects.filter(
+        id__in=enrolled_course_ids
+    ).annotate(
+        total_lectures=Count('lectures'),
+        completed_lectures=Count(
+            'lectures__progress',
+            filter=Q(
+                lectures__progress__user=request.user,
+                lectures__progress__completed=True
+            )
+        )
+    ).only('id', 'course_title', 'course_slug', 'course_image', 'course_description')
+    
+    # Calculate progress for each course
     courses_with_progress = []
-    for enrollment in enrollments:
-        course = enrollment.course
-        total_lectures = Lecture.objects.filter(course=course).count()
-        completed = LectureProgress.objects.filter(
-            user=request.user,
-            lecture__course=course,
-            completed=True
-        ).count()
-        progress = int((completed / total_lectures) * 100) if total_lectures > 0 else 0
+    for course in courses_with_counts:
+        total = course.total_lectures
+        completed = course.completed_lectures
+        progress = int((completed / total) * 100) if total > 0 else 0
         
         courses_with_progress.append({
             'course': course,
             'progress': progress,
             'completed': completed,
-            'total': total_lectures,
+            'total': total,
         })
     
     return render(request, 'courses/enrolled_courses.html', {

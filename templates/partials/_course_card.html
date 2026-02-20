@@ -2,7 +2,7 @@
 <!-- Usage: {% include 'partials/_course_card.html' with course=course show_badge=True %} -->
 
 <div class="card course-card border-0 shadow-sm h-100 w-100 overflow-hidden">
-  <a href="{% url 'course-detail' course.course_slug %}" class="text-decoration-none text-dark">
+  <a href="{% url 'courses:course-detail' course.course_slug %}" class="text-decoration-none text-dark">
     {% if course.course_image %}
     <div class="overflow-hidden">
       <img src="{{ course.course_image.url }}" 
@@ -25,7 +25,7 @@
       {{ course.course_description|truncatewords:15|default:"Learn essential skills with hands-on projects and expert guidance." }}
     </p>
     <div class="d-flex justify-content-between align-items-center mt-auto">
-      <a href="{% url 'course-detail' course.course_slug %}" class="btn btn-sm btn-primary">
+      <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-sm btn-primary">
         View Course
       </a>
       <small class="text-muted">{{ course.course_created_at|timesince }} ago</small>

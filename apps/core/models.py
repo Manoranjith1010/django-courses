@@ -8,7 +8,12 @@ from django.dispatch import receiver
 # Create your models here.
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, verbose_name="User", on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        User,
+        verbose_name="User",
+        on_delete=models.CASCADE,
+        related_name='core_profile'  # Unique related_name to avoid conflict
+    )
     bio = models.TextField(blank=True, null=True, verbose_name="Short Description")
     address = models.TextField(blank=True, null=True, verbose_name="Address")
     date_of_birth = models.DateField(null=True, blank=True, verbose_name="Date of Birth")
@@ -23,5 +28,5 @@ class Profile(models.Model):
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-    instance.profile.save()
+    instance.core_profile.save()  # Updated to use new related_name
     

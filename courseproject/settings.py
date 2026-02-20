@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    'courses',
-    'core',
+    'apps.courses',
+    'apps.core',
+    'apps.users',
+
     
     'allauth',
     'allauth.account',
@@ -72,8 +74,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'courses.context_processors.head_menu',
-                'courses.context_processors.my_courses',
+                'apps.courses.context_processors.head_menu',
+                'apps.courses.context_processors.my_courses',
             ],
         },
     },
@@ -165,8 +167,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'courseproject/static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static') # It'll be automatically created on Production
+# Local static assets live in the top-level "static" folder
+STATICFILES_DIRS = [BASE_DIR / 'static']
+# Collected static files for production (e.g., via collectstatic)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Settings for Media
 MEDIA_URL = '/media/'
@@ -193,12 +197,21 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 # For Django All Auth
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED=True
+
+# Modern Allauth settings (django-allauth >= 0.63.0)
+# Replaces deprecated ACCOUNT_AUTHENTICATION_METHOD and ACCOUNT_EMAIL_REQUIRED
+ACCOUNT_LOGIN_METHODS = {'email'}  # Login via email only
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+
+# Security settings
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
-ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
-# Turn Off Verification Email
+
+# Rate limiting (replaces deprecated ACCOUNT_LOGIN_ATTEMPTS_LIMIT/TIMEOUT)
+ACCOUNT_RATE_LIMITS = {
+    'login_failed': '5/5m',  # 5 attempts per 5 minutes
+}
+
+# Email verification (set to 'mandatory' for production)
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Provider specific settings

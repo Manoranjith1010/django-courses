@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Profile Header Card -->
+            <div class="card mb-4 fade-in">
+                <div class="card-body text-center py-5">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="avatar-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 2.5rem; font-weight: 600;">
+                            {{ user.username|first|upper }}
+                        </div>
+                    {% endif %}
+                    <h2 class="mb-1">{{ user.get_full_name|default:user.username }}</h2>
+                    <p class="text-muted mb-3">{{ user.email }}</p>
+                    <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">
+                        <span data-feather="edit-2"></span> Edit Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Details Card -->
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Profile Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Bio</div>
+                        <div class="col-sm-8">{{ profile.bio|default:"Not provided" }}</div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Phone Number</div>
+                        <div class="col-sm-8">{{ profile.phone_number|default:"Not provided" }}</div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Date of Birth</div>
+                        <div class="col-sm-8">{{ profile.date_of_birth|default:"Not provided" }}</div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Preferred Language</div>
+                        <div class="col-sm-8">{{ profile.preferred_language|upper }}</div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Email Notifications</div>
+                        <div class="col-sm-8">
+                            {% if profile.email_notifications %}
+                                <span class="badge bg-success">Enabled</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Disabled</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Member Since</div>
+                        <div class="col-sm-8">{{ user.date_joined|date:"F d, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

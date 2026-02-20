@@ -168,7 +168,7 @@
       <!-- Modern Bootstrap 5 Navbar with Active Highlight -->
       <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
         <div class="container">
-          <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
+          <a class="navbar-brand d-flex align-items-center" href="{% url 'courses:home' %}">
             <img src="{% static 'images/logo.png' %}" alt="EDU" width="32" class="me-2"/>
             <span class="fw-semibold">EDU</span>
           </a>
@@ -180,10 +180,10 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'courses:home' %}">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link {% if request.resolver_match.url_name == 'courses' %}active{% endif %}" href="{% url 'courses' %}">Courses</a>
+                <a class="nav-link {% if request.resolver_match.url_name == 'courses' %}active{% endif %}" href="{% url 'courses:courses' %}">Courses</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'topic-courses' %}active{% endif %}" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -191,13 +191,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                   {% for topic in topics %}
-                    <li><a class="dropdown-item" href="{% url 'topic-courses' topic.topic_slug %}">{{ topic }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'courses:topic-courses' topic.topic_slug %}">{{ topic }}</a></li>
                   {% endfor %}
                 </ul>
               </li>
             </ul>
 
-            <form class="d-flex me-3" method="get" action="{% url 'search-courses' %}">
+            <form class="d-flex me-3" method="get" action="{% url 'courses:search-courses' %}">
               <input class="form-control" type="search" name="q" placeholder="Search courses..." aria-label="Search">
             </form>
 
@@ -210,11 +210,11 @@
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="myCoursesDropdown">
                     {% if enrolled_courses %}
                       {% for enrolled_course in enrolled_courses %}
-                        <li><a class="dropdown-item" href="{% url 'lecture' enrolled_course.course.course_slug %}"><small>{{ enrolled_course.course.course_title }}</small></a></li>
+                        <li><a class="dropdown-item" href="{% url 'courses:lecture' enrolled_course.course.course_slug %}"><small>{{ enrolled_course.course.course_title }}</small></a></li>
                       {% endfor %}
                       <li><hr class="dropdown-divider"></li>
                     {% endif %}
-                    <li><a class="dropdown-item" href="{% url 'enrolled-courses' %}">See All</a></li>
+                    <li><a class="dropdown-item" href="{% url 'courses:enrolled-courses' %}">See All</a></li>
                   </ul>
                 </li>
 
@@ -223,7 +223,7 @@
                     {{ user.username }}
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'core:profile' %}">Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'account_change_password' %}">Change Password</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
@@ -264,8 +264,8 @@
             <p class="text-muted small mb-0 mt-2">&copy; {% now "Y" %} EDU. All rights reserved.</p>
           </div>
           <div class="col-md-6 text-center text-md-end">
-            <a href="{% url 'home' %}" class="text-muted text-decoration-none small me-3">Home</a>
-            <a href="{% url 'courses' %}" class="text-muted text-decoration-none small me-3">Courses</a>
+            <a href="{% url 'courses:home' %}" class="text-muted text-decoration-none small me-3">Home</a>
+            <a href="{% url 'courses:courses' %}" class="text-muted text-decoration-none small me-3">Courses</a>
             <a href="#" class="text-muted text-decoration-none small">Back to top</a>
           </div>
         </div>

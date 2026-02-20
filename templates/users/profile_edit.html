@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Edit Profile</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Avatar -->
+                        <div class="mb-4 text-center">
+                            {% if profile.avatar %}
+                                <img src="{{ profile.avatar.url }}" alt="Current Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                            {% else %}
+                                <div class="avatar-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 2rem; font-weight: 600;">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                            <div>
+                                <label for="avatar" class="btn btn-outline-primary btn-sm">
+                                    <span data-feather="upload"></span> Change Avatar
+                                </label>
+                                <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*">
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="mb-3">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea name="bio" id="bio" class="form-control" rows="3" placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-3">
+                            <label for="phone_number" class="form-label">Phone Number</label>
+                            <input type="tel" name="phone_number" id="phone_number" class="form-control" value="{{ profile.phone_number }}" placeholder="+1 (555) 000-0000">
+                        </div>
+
+                        <!-- Preferred Language -->
+                        <div class="mb-3">
+                            <label for="preferred_language" class="form-label">Preferred Language</label>
+                            <select name="preferred_language" id="preferred_language" class="form-select">
+                                <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English</option>
+                                <option value="es" {% if profile.preferred_language == 'es' %}selected{% endif %}>Spanish</option>
+                                <option value="fr" {% if profile.preferred_language == 'fr' %}selected{% endif %}>French</option>
+                                <option value="de" {% if profile.preferred_language == 'de' %}selected{% endif %}>German</option>
+                                <option value="zh" {% if profile.preferred_language == 'zh' %}selected{% endif %}>Chinese</option>
+                            </select>
+                        </div>
+
+                        <!-- Email Notifications -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input type="checkbox" name="email_notifications" id="email_notifications" class="form-check-input" {% if profile.email_notifications %}checked{% endif %}>
+                                <label for="email_notifications" class="form-check-label">Receive email notifications</label>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <span data-feather="save"></span> Save Changes
+                            </button>
+                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

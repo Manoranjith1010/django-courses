@@ -26,9 +26,9 @@ class DatabaseRouter:
     def _is_mongo_model(self, model):
         """
         Check if a model should use MongoDB based on app label only.
-        Simpler and easier to maintain than tracking individual models.
+        Includes safety check for models without _meta attribute.
         """
-        return model._meta.app_label in self.MONGO_APP_LABELS
+        return hasattr(model, '_meta') and model._meta.app_label in self.MONGO_APP_LABELS
     
     def db_for_read(self, model, **hints):
         """
@@ -56,7 +56,9 @@ class DatabaseRouter:
         """
         db1 = 'mongodb' if self._is_mongo_model(obj1.__class__) else 'default'
         db2 = 'mongodb' if self._is_mongo_model(obj2.__class__) else 'default'
-        return db1 == db2
+        if db1 and db2:
+            return db1 == db2
+        return None
     
     def allow_migrate(self, db, app_label, model_name=None, **hints):
         """

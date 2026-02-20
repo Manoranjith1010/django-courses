@@ -84,7 +84,7 @@
                 <div class="card border-0 shadow-sm sticky-top" style="top: 1rem;">
                     <div class="card-body p-4">
                         {% if enrolled %}
-                        <a href="{% url 'lecture' course.course_slug %}" class="btn btn-primary btn-lg w-100 mb-3">
+                        <a href="{% url 'courses:lecture' course.course_slug %}" class="btn btn-primary btn-lg w-100 mb-3">
                             <span class="me-2">▶</span> Start Learning
                         </a>
                         <p class="text-success text-center small mb-0">
@@ -94,7 +94,7 @@
                         <div class="text-center mb-3">
                             <span class="h3 fw-bold text-success">Free</span>
                         </div>
-                        <a href="{% url 'enroll' course.id %}" class="btn btn-success btn-lg w-100 mb-3">
+                        <a href="{% url 'courses:enroll' course.id %}" class="btn btn-success btn-lg w-100 mb-3">
                             Enroll Now
                         </a>
                         <p class="text-muted text-center small mb-0">

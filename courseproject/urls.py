@@ -10,8 +10,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('', include('courses.urls')),
-    path('', include('core.urls')),
+    path('users/', include('apps.users.urls')),
+    path('profile/', include('apps.core.urls')),  # Profile management
+    path('', include('apps.courses.urls')),  # Homepage and courses at root
 ]
 # To Display Images while onlocal server
 if settings.DEBUG:

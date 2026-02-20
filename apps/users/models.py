@@ -51,7 +51,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name='profile'
+        related_name='user_profile'  # Unique related_name to avoid conflict with core.Profile
     )
     bio = models.TextField(_('bio'), max_length=500, blank=True)
     avatar = models.ImageField(_('avatar'), upload_to='avatars/', blank=True, null=True)

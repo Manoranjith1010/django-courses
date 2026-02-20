@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }}'s Profile{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Profile Header Card -->
+            <div class="card mb-4 fade-in">
+                <div class="card-body text-center py-5">
+                    {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                    {% else %}
+                        <div class="avatar-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 2.5rem; font-weight: 600;">
+                            {{ profile_user.username|first|upper }}
+                        </div>
+                    {% endif %}
+                    <h2 class="mb-1">{{ profile_user.get_full_name|default:profile_user.username }}</h2>
+                    {% if profile.bio %}
+                        <p class="text-muted mb-3">{{ profile.bio }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Profile Details Card -->
+            <div class="card fade-in">
+                <div class="card-header">
+                    <h5 class="mb-0">About {{ profile_user.username }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4 text-muted">Member Since</div>
+                        <div class="col-sm-8">{{ profile_user.date_joined|date:"F d, Y" }}</div>
+                    </div>
+                    {% if profile.preferred_language %}
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-4 text-muted">Language</div>
+                        <div class="col-sm-8">{{ profile.preferred_language|upper }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

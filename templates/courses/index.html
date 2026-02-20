@@ -18,7 +18,7 @@ EDU - Launch Your Online Course Empire
         <h1 class="display-5 fw-bold mb-3">Master In-Demand Tech Skills</h1>
         <p class="lead text-muted mb-4">Learn from industry experts. Build real projects. Launch your career.</p>
         <div class="d-flex flex-wrap gap-2">
-          <a href="{% url 'courses' %}" class="btn btn-primary btn-lg px-4">Browse Courses</a>
+          <a href="{% url 'courses:courses' %}" class="btn btn-primary btn-lg px-4">Browse Courses</a>
           {% if not user.is_authenticated %}
           <a href="{% url 'account_signup' %}" class="btn btn-outline-dark btn-lg px-4">Sign Up Free</a>
           {% endif %}
@@ -46,7 +46,7 @@ EDU - Launch Your Online Course Empire
       {% for course in courses %}
         <div class="col-12 col-sm-6 col-lg-4 d-flex">
           <div class="card course-card border-0 shadow-sm h-100 w-100 overflow-hidden">
-            <a href="{% url 'course-detail' course.course_slug %}" class="text-decoration-none text-dark">
+            <a href="{% url 'courses:course-detail' course.course_slug %}" class="text-decoration-none text-dark">
             {% if course.course_image %}
             <div class="overflow-hidden">
               <img src="{{ course.course_image.url }}" class="card-img-top course-card-image" alt="{{ course.course_title }}">
@@ -62,7 +62,7 @@ EDU - Launch Your Online Course Empire
               <h5 class="card-title mb-2">{{ course.course_title }}</h5>
               <p class="card-text text-muted small mb-3">{{ course.course_description|truncatewords:15|default:"Learn essential skills with hands-on projects and expert guidance." }}</p>
               <div class="d-flex justify-content-between align-items-center mt-auto">
-                <a href="{% url 'course-detail' course.course_slug %}" class="btn btn-sm btn-primary">View Course</a>
+                <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-sm btn-primary">View Course</a>
                 <small class="text-muted">{{ course.course_created_at|timesince }} ago</small>
               </div>
             </div>

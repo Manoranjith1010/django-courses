@@ -1,0 +1,251 @@
+/* ==========================================================================
+   BACKGROUND OPTIONS - Modern UI Backgrounds for Course Listings
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   OPTION 1: Subtle CSS Dot Grid
+   A clean, technical dot pattern that adds depth without distraction.
+   Usage: Add class "bg-dot-grid" to your container
+   -------------------------------------------------------------------------- */
+
+.bg-dot-grid {
+  background-color: #F8F9FA;
+  background-image: radial-gradient(
+    circle,
+    #CBD5E1 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+}
+
+/* Denser dot grid variant */
+.bg-dot-grid-dense {
+  background-color: #F3F4F6;
+  background-image: radial-gradient(
+    circle,
+    #E2E8F0 0.8px,
+    transparent 0.8px
+  );
+  background-size: 16px 16px;
+}
+
+/* Larger, more spaced dot grid variant */
+.bg-dot-grid-sparse {
+  background-color: #F8F9FA;
+  background-image: radial-gradient(
+    circle,
+    #D1D5DB 1.2px,
+    transparent 1.2px
+  );
+  background-size: 28px 28px;
+}
+
+
+/* --------------------------------------------------------------------------
+   OPTION 2: Soft Ambient Mesh Gradient (Glassmorphism Style)
+   Modern SaaS-style gradient with soft, blurred color orbs.
+   Usage: Add class "bg-mesh-gradient" to your container
+   -------------------------------------------------------------------------- */
+
+.bg-mesh-gradient {
+  background-color: #F8FAFC;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-mesh-gradient::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    /* Top-left blue orb */
+    radial-gradient(
+      ellipse 600px 600px at 20% 10%,
+      rgba(0, 123, 255, 0.08) 0%,
+      transparent 50%
+    ),
+    /* Top-right purple orb */
+    radial-gradient(
+      ellipse 500px 500px at 80% 15%,
+      rgba(139, 92, 246, 0.06) 0%,
+      transparent 50%
+    ),
+    /* Center-left cyan orb */
+    radial-gradient(
+      ellipse 400px 400px at 10% 60%,
+      rgba(6, 182, 212, 0.05) 0%,
+      transparent 50%
+    ),
+    /* Bottom-right blue orb */
+    radial-gradient(
+      ellipse 550px 550px at 85% 80%,
+      rgba(59, 130, 246, 0.07) 0%,
+      transparent 50%
+    ),
+    /* Bottom-center warm accent */
+    radial-gradient(
+      ellipse 300px 300px at 50% 90%,
+      rgba(251, 191, 36, 0.04) 0%,
+      transparent 50%
+    );
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Ensure content stays above the gradient */
+.bg-mesh-gradient > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* --------------------------------------------------------------------------
+   OPTION 2 VARIANT: Animated Mesh Gradient
+   Adds subtle movement for a more dynamic feel.
+   Usage: Add class "bg-mesh-gradient-animated" to your container
+   -------------------------------------------------------------------------- */
+
+.bg-mesh-gradient-animated {
+  background-color: #F8FAFC;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-mesh-gradient-animated::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    radial-gradient(
+      ellipse 600px 600px at 20% 10%,
+      rgba(0, 123, 255, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 500px 500px at 80% 15%,
+      rgba(139, 92, 246, 0.06) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 400px 400px at 10% 60%,
+      rgba(6, 182, 212, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse 550px 550px at 85% 80%,
+      rgba(59, 130, 246, 0.07) 0%,
+      transparent 50%
+    );
+  z-index: 0;
+  pointer-events: none;
+  animation: mesh-drift 20s ease-in-out infinite;
+}
+
+@keyframes mesh-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(2%, 1%) scale(1.02);
+  }
+  50% {
+    transform: translate(-1%, 2%) scale(1);
+  }
+  75% {
+    transform: translate(1%, -1%) scale(1.01);
+  }
+}
+
+.bg-mesh-gradient-animated > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* --------------------------------------------------------------------------
+   OPTION 2 VARIANT: Stronger Mesh Gradient
+   More visible color orbs for bolder designs.
+   Usage: Add class "bg-mesh-gradient-bold" to your container
+   -------------------------------------------------------------------------- */
+
+.bg-mesh-gradient-bold {
+  background-color: #F1F5F9;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-mesh-gradient-bold::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  left: -30%;
+  width: 160%;
+  height: 160%;
+  background: 
+    radial-gradient(
+      ellipse 500px 500px at 15% 20%,
+      rgba(0, 123, 255, 0.12) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 450px 450px at 85% 25%,
+      rgba(139, 92, 246, 0.10) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 400px 400px at 75% 75%,
+      rgba(59, 130, 246, 0.11) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 350px 350px at 25% 80%,
+      rgba(6, 182, 212, 0.08) 0%,
+      transparent 60%
+    );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-mesh-gradient-bold > * {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* --------------------------------------------------------------------------
+   CARD ENHANCEMENT
+   Ensures course cards have proper contrast against new backgrounds.
+   -------------------------------------------------------------------------- */
+
+/* Enhanced shadow for cards on patterned backgrounds */
+.bg-dot-grid .course-card,
+.bg-dot-grid-dense .course-card,
+.bg-dot-grid-sparse .course-card,
+.bg-mesh-gradient .course-card,
+.bg-mesh-gradient-animated .course-card,
+.bg-mesh-gradient-bold .course-card {
+  background: #FFFFFF;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Enhanced hover state */
+.bg-dot-grid .course-card:hover,
+.bg-dot-grid-dense .course-card:hover,
+.bg-dot-grid-sparse .course-card:hover,
+.bg-mesh-gradient .course-card:hover,
+.bg-mesh-gradient-animated .course-card:hover,
+.bg-mesh-gradient-bold .course-card:hover {
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 12px 32px rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.06);
+}

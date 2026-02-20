@@ -325,10 +325,13 @@ def enroll(request, course_id):
 @login_required(login_url='account_login')
 def enrolled_courses(request):
     """List of user's enrolled courses with progress - optimized to avoid N+1."""
-    # Get all enrolled course IDs for the user
-    enrolled_course_ids = Enroll.objects.filter(
+    # Get all enrollments for the user with course data
+    enrollments = Enroll.objects.filter(
         user=request.user
-    ).values_list('course_id', flat=True)
+    ).select_related('course').values('course_id', 'enrolled_at')
+    
+    enrollment_map = {e['course_id']: e['enrolled_at'] for e in enrollments}
+    enrolled_course_ids = list(enrollment_map.keys())
     
     # Get courses with lecture counts in a single query
     courses_with_counts = Course.objects.filter(
@@ -356,6 +359,7 @@ def enrolled_courses(request):
             'progress': progress,
             'completed': completed,
             'total': total,
+            'enrolled_at': enrollment_map.get(course.id),
         })
     
     return render(request, 'courses/enrolled_courses.html', {
@@ -367,14 +371,14 @@ def enrolled_courses(request):
 def submit_review(request, course_slug):
     """Submit or update a course review."""
     if request.method != 'POST':
-        return redirect('course-detail', course_slug=course_slug)
+        return redirect('courses:course-detail', course_slug=course_slug)
     
     course = get_object_or_404(Course, course_slug=course_slug)
     
     # Check if user is enrolled
     if not Enroll.objects.filter(course=course, user=request.user).exists():
         messages.error(request, "You must be enrolled to leave a review.")
-        return redirect('course-detail', course_slug=course_slug)
+        return redirect('courses:course-detail', course_slug=course_slug)
     
     rating = request.POST.get('rating', 5)
     comment = request.POST.get('comment', '').strip()
@@ -398,4 +402,4 @@ def submit_review(request, course_slug):
     else:
         messages.success(request, "Your review has been updated.")
     
-    return redirect('course-detail', course_slug=course_slug)
+    return redirect('courses:course-detail', course_slug=course_slug)

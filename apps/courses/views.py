@@ -328,9 +328,9 @@ def enrolled_courses(request):
     # Get all enrollments for the user with course data
     enrollments = Enroll.objects.filter(
         user=request.user
-    ).select_related('course').values('course_id', 'enrolled_at')
+    ).select_related('course').values('course_id', 'enrolled_date')
     
-    enrollment_map = {e['course_id']: e['enrolled_at'] for e in enrollments}
+    enrollment_map = {e['course_id']: e['enrolled_date'] for e in enrollments}
     enrolled_course_ids = list(enrollment_map.keys())
     
     # Get courses with lecture counts in a single query

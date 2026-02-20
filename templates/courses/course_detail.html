@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    {{ course.seo_course_title|default:course.course_title }} | EDU
+    {{ course.seo_course_title|default:course.course_title }} | LaunchDev
 {% endblock title %}
 
 {% block meta %}
@@ -94,8 +94,8 @@
                             {% if enrolled %}
                             <button type="button" 
                                     class="btn btn-sm btn-outline-primary" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#Modal{{ lecture.id }}">
+                                    data-toggle="modal" 
+                                    data-target="#Modal{{ lecture.id }}">
                                 Watch
                             </button>
                             {% endif %}
@@ -108,7 +108,9 @@
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
                                         <h6 class="modal-title">{{ lecture.lecture_title }}</h6>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
                                     <div class="modal-body p-0">
                                         {% if lecture.lecture_file %}

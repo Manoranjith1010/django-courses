@@ -1,11 +1,54 @@
 :root {
   --primary-color: #0d6efd;
+  --brand-primary: #007BFF;
+  --brand-dark: #1A202C;
   --transition-speed: 0.2s;
 }
 
 body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   LAUNCHDEV LOGO STYLING
+   ========================================================================== */
+
+.logo-brand {
+  font-family: 'Poppins', 'Montserrat', 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+}
+
+.logo-brand:hover {
+  text-decoration: none !important;
+}
+
+.logo-launch {
+  color: var(--brand-dark);
+  transition: color var(--transition-speed);
+}
+
+.logo-dev {
+  color: var(--brand-primary);
+  transition: color var(--transition-speed);
+}
+
+.logo-brand:hover .logo-launch {
+  color: #2D3748;
+}
+
+.logo-brand:hover .logo-dev {
+  color: #0056b3;
+}
+
+/* Footer logo - slightly smaller */
+footer .logo-brand {
+  font-size: 1.25rem;
 }
 
 /* Navbar styling */

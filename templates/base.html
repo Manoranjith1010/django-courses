@@ -17,13 +17,18 @@
     </title>
 
     {% block meta %}
-    <meta name="description" content="EDU E-Learning Project">
-    <meta name="keywords" content="EDU, Online Courses, E-Learning">
+    <meta name="description" content="LaunchDev - Learn to Code, Build Your Future">
+    <meta name="keywords" content="LaunchDev, Online Courses, E-Learning, Programming, Web Development">
     {% endblock meta %}
 
     <meta name="author" content="Vijay Thapa">
 
     <link rel="canonical" href="">
+
+    <!-- Google Fonts - Poppins for Logo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5 CSS -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
@@ -51,12 +56,11 @@
       <!-- Modern Bootstrap 5 Navbar with Active Highlight -->
       <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
         <div class="container">
-          <a class="navbar-brand d-flex align-items-center" href="{% url 'courses:home' %}">
-            <img src="{% static 'images/logo.png' %}" alt="EDU" width="32" class="me-2"/>
-            <span class="fw-semibold">EDU</span>
+          <a class="navbar-brand d-flex align-items-center logo-brand" href="{% url 'courses:home' %}">
+            <span class="logo-launch">Launch</span><span class="logo-dev">Dev</span>
           </a>
 
-          <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
 
@@ -69,7 +73,7 @@
                 <a class="nav-link {% if request.resolver_match.url_name == 'courses' %}active{% endif %}" href="{% url 'courses:courses' %}">Courses</a>
               </li>
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'topic-courses' %}active{% endif %}" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'topic-courses' %}active{% endif %}" href="#" id="categoriesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                   Categories
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
@@ -87,7 +91,7 @@
             {% if user.is_authenticated %}
               <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="myCoursesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle" href="#" id="myCoursesDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                     My Courses
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="myCoursesDropdown">
@@ -102,7 +106,7 @@
                 </li>
 
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                     {{ user.username }}
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -140,11 +144,10 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-            <div class="d-flex align-items-center justify-content-center justify-content-md-start">
-              <img src="{% static 'images/logo.png' %}" alt="EDU" width="24" class="me-2"/>
-              <span class="fw-semibold">EDU</span>
-            </div>
-            <p class="text-muted small mb-0 mt-2">&copy; {% now "Y" %} EDU. All rights reserved.</p>
+            <a href="{% url 'courses:home' %}" class="d-flex align-items-center justify-content-center justify-content-md-start text-decoration-none logo-brand">
+              <span class="logo-launch">Launch</span><span class="logo-dev">Dev</span>
+            </a>
+            <p class="text-muted small mb-0 mt-2">&copy; {% now "Y" %} LaunchDev. All rights reserved.</p>
           </div>
           <div class="col-md-6 text-center text-md-end">
             <a href="{% url 'courses:home' %}" class="text-muted text-decoration-none small me-3">Home</a>
@@ -155,30 +158,33 @@
       </div>
     </footer>
 
-    <!-- Bootstrap 5 JS Bundle (no jQuery needed) -->
+    <!-- jQuery (required for Bootstrap 4) -->
+    <script src="{% static 'js/jquery.js'%}"></script>
+    <!-- Bootstrap 4 JS Bundle -->
     <script src="{% static 'js/bootstrap.bundle.min.js'%}"></script>
     
-    <!-- Toast notification helper -->
+    <!-- Toast notification helper (Bootstrap 4) -->
     <script>
-      function showToast(message, type = 'success') {
-        const container = document.getElementById('toastContainer');
-        const toastId = 'toast-' + Date.now();
-        const bgClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-primary';
+      function showToast(message, type) {
+        type = type || 'success';
+        var container = document.getElementById('toastContainer');
+        var toastId = 'toast-' + Date.now();
+        var bgClass = type === 'success' ? 'bg-success' : type === 'error' ? 'bg-danger' : 'bg-primary';
         
-        const toastHtml = `
-          <div id="${toastId}" class="toast align-items-center text-white ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-              <div class="toast-body">${message}</div>
-              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-          </div>
-        `;
+        var toastHtml = 
+          '<div id="' + toastId + '" class="toast align-items-center text-white ' + bgClass + ' border-0" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">' +
+            '<div class="d-flex">' +
+              '<div class="toast-body">' + message + '</div>' +
+              '<button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>';
         
         container.insertAdjacentHTML('beforeend', toastHtml);
-        const toast = new bootstrap.Toast(document.getElementById(toastId), { delay: 4000 });
-        toast.show();
+        $('#' + toastId).toast('show');
         
-        document.getElementById(toastId).addEventListener('hidden.bs.toast', function() {
+        $('#' + toastId).on('hidden.bs.toast', function() {
           this.remove();
         });
       }

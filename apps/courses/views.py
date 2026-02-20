@@ -316,7 +316,7 @@ def enroll(request, course_id):
     try:
         Enroll.objects.create(user=request.user, course=course)
         messages.success(request, "Successfully enrolled! Start learning now.")
-        return redirect('lecture', course_slug=course.course_slug)
+        return redirect('courses:lecture', course_slug=course.course_slug)
     except IntegrityError:
         messages.error(request, "You are already enrolled in this course.")
         return redirect('course-detail', course_slug=course.course_slug)

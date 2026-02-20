@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+
+from apps.core.admin import admin_site
 from .models import Topic, Course, Lecture, Enroll, LectureProgress, Review
 
-# Register your models here.
+
 class TopicAdmin(admin.ModelAdmin):
     list_display = ('topic_title', 'topic_slug', 'topic_is_active')
     list_editable = ('topic_slug', 'topic_is_active')
@@ -60,7 +62,6 @@ class LectureAdmin(admin.ModelAdmin):
     exclude = ('lecture_video',)
     # Performance optimizations
     list_select_related = ('course',)
-    autocomplete_fields = ['course']
 
 
 class EnrollAdmin(admin.ModelAdmin):
@@ -70,7 +71,6 @@ class EnrollAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'user__email', 'course__course_title')
     # Performance optimizations
     list_select_related = ('user', 'course')
-    autocomplete_fields = ['user', 'course']
     date_hierarchy = 'enrolled_date'
 
 
@@ -82,7 +82,6 @@ class LectureProgressAdmin(admin.ModelAdmin):
     readonly_fields = ('last_accessed',)
     # Performance optimizations
     list_select_related = ('user', 'lecture', 'lecture__course')
-    autocomplete_fields = ['user', 'lecture']
 
 
 class ReviewAdmin(admin.ModelAdmin):
@@ -93,13 +92,14 @@ class ReviewAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     # Performance optimizations
     list_select_related = ('user', 'course')
-    autocomplete_fields = ['user', 'course']
 
 
-admin.site.register(Topic, TopicAdmin)
-admin.site.register(Course, CourseAdmin)
-admin.site.register(Lecture, LectureAdmin)
-admin.site.register(Enroll, EnrollAdmin)
-admin.site.register(LectureProgress, LectureProgressAdmin)
-admin.site.register(Review, ReviewAdmin)
+# Register models with both the default admin site and the custom LMS admin
+for site in (admin.site, admin_site):
+    site.register(Topic, TopicAdmin)
+    site.register(Course, CourseAdmin)
+    site.register(Lecture, LectureAdmin)
+    site.register(Enroll, EnrollAdmin)
+    site.register(LectureProgress, LectureProgressAdmin)
+    site.register(Review, ReviewAdmin)
 

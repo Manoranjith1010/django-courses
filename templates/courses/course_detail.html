@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
-    {{ course.seo_course_title }}
+    {{ course.seo_course_title|default:course.course_title }} | EDU
 {% endblock title %}
 
 {% block meta %}
@@ -13,47 +14,96 @@
 
 {% include 'partials/_messages.html' %}
 
-<div class="py-5 bg-light">
-    <div class="container">
+<!-- Course Detail Stylesheet -->
+<link href="{% static 'css/course-detail.css' %}" rel="stylesheet">
 
+<section class="course-detail">
+    <div class="container">
         <div class="row">
-            <!-- Main Content -->
+            
+            <!-- Main Content Column -->
             <div class="col-lg-8">
+                
+                <!-- Hero Image - Constrained -->
                 {% if course.course_image %}
-                <img src="{{ course.course_image.url }}" class="img-fluid rounded shadow-sm mb-4" alt="{{ course.course_title }}" style="width: 100%; max-height: 400px; object-fit: cover;">
+                <img src="{{ course.course_image.url }}" 
+                     class="course-hero-image" 
+                     alt="{{ course.course_title }}">
                 {% endif %}
 
-                <h1 class="h2 mb-3">{{ course.course_title }}</h1>
-                <p class="text-muted mb-4">{{ course.course_description }}</p>
+                <!-- Course Title -->
+                <h1 class="course-title">{{ course.course_title }}</h1>
+
+                <!-- Course Description - Structured with Semantic HTML -->
+                <div class="course-description">
+                    
+                    {% if course.course_description %}
+                    <!-- Overview Section -->
+                    <h2 class="course-section-title">Course Overview</h2>
+                    <p>{{ course.course_description }}</p>
+                    {% endif %}
+
+                    <!-- What You'll Learn Section -->
+                    <h2 class="course-section-title">What You'll Learn</h2>
+                    <ul class="course-features">
+                        <li>Master core concepts and fundamentals</li>
+                        <li>Build real-world projects from scratch</li>
+                        <li>Learn industry best practices and patterns</li>
+                        <li>Gain hands-on experience with practical exercises</li>
+                        <li>Get lifetime access to course materials</li>
+                    </ul>
+
+                    <!-- Why This Course Section -->
+                    <h2 class="course-section-title">Why Choose This Course?</h2>
+                    <p>
+                        This course is designed for learners who want to build practical skills 
+                        quickly. Our structured curriculum takes you from beginner to confident 
+                        practitioner through hands-on projects and real-world examples.
+                    </p>
+                    
+                    <h3 class="course-subsection-title">Course Benefits</h3>
+                    <ul class="course-features bullet-style">
+                        <li>Self-paced learning — study on your own schedule</li>
+                        <li>Expert instruction with clear explanations</li>
+                        <li>Downloadable resources and code examples</li>
+                        <li>Mobile-friendly — learn anywhere, anytime</li>
+                    </ul>
+
+                </div>
 
                 <!-- Course Content List -->
                 {% if lectures %}
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Course Content</h5>
-                        <span class="badge bg-primary">{{ lectures|length }} lectures</span>
+                <div class="course-content-card">
+                    <div class="course-content-header">
+                        <h3>Course Content</h3>
+                        <span class="lecture-count-badge">{{ lectures|length }} lectures</span>
                     </div>
-                    <ul class="list-group list-group-flush">
+                    
+                    <div class="lecture-list">
                         {% for lecture in lectures %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center py-3">
-                            <span>
+                        <div class="lecture-item">
+                            <span class="lecture-title">
                                 {% if enrolled %}
-                                <span class="text-primary me-2">▶</span>
+                                <span class="lecture-icon unlocked">▶</span>
                                 {% else %}
-                                <span class="text-muted me-2">🔒</span>
+                                <span class="lecture-icon locked">🔒</span>
                                 {% endif %}
                                 {{ lecture.lecture_title }}
                             </span>
+                            
                             {% if enrolled %}
-                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Modal{{ lecture.id }}">
+                            <button type="button" 
+                                    class="btn btn-sm btn-outline-primary" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#Modal{{ lecture.id }}">
                                 Watch
                             </button>
                             {% endif %}
-                        </li>
+                        </div>
 
                         {% if enrolled %}
                         <!-- Video Modal -->
-                        <div class="modal fade" id="Modal{{lecture.id}}" tabindex="-1" aria-hidden="true">
+                        <div class="modal fade" id="Modal{{ lecture.id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
@@ -74,46 +124,69 @@
                         </div>
                         {% endif %}
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
                 {% endif %}
+
             </div>
 
             <!-- Sidebar - Sticky Enroll Card -->
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm sticky-top" style="top: 1rem;">
-                    <div class="card-body p-4">
+                <div class="enroll-sidebar">
+                    <div class="enroll-card">
+                        
                         {% if enrolled %}
-                        <a href="{% url 'courses:lecture' course.course_slug %}" class="btn btn-primary btn-lg w-100 mb-3">
+                        <!-- Enrolled State -->
+                        <a href="{% url 'courses:lecture' course.course_slug %}" 
+                           class="btn-enroll btn-start-learning">
                             <span class="me-2">▶</span> Start Learning
                         </a>
-                        <p class="text-success text-center small mb-0">
+                        <p class="enrollment-status">
                             <span class="me-1">✓</span> You're enrolled!
                         </p>
+                        
                         {% else %}
-                        <div class="text-center mb-3">
-                            <span class="h3 fw-bold text-success">Free</span>
-                        </div>
-                        <a href="{% url 'courses:enroll' course.id %}" class="btn btn-success btn-lg w-100 mb-3">
+                        <!-- Not Enrolled State -->
+                        <div class="price-tag">Free</div>
+                        <a href="{% url 'courses:enroll' course.id %}" 
+                           class="btn-enroll">
                             Enroll Now
                         </a>
-                        <p class="text-muted text-center small mb-0">
-                            Full lifetime access
-                        </p>
+                        <p class="subtext">Full lifetime access</p>
                         {% endif %}
 
                         {% if lectures %}
-                        <hr class="my-3">
-                        <ul class="list-unstyled small text-muted mb-0">
-                            <li class="mb-2"><span class="me-2">📹</span> {{ lectures|length }} video lectures</li>
-                            <li class="mb-2"><span class="me-2">📱</span> Mobile & desktop access</li>
-                            <li><span class="me-2">♾️</span> Lifetime access</li>
+                        <hr>
+                        
+                        <h4 style="font-size: 0.95rem; color: #2D3748; margin-bottom: 0.75rem; font-weight: 600;">
+                            This course includes:
+                        </h4>
+                        <ul class="course-includes">
+                            <li>
+                                <span class="icon">📹</span>
+                                {{ lectures|length }} video lectures
+                            </li>
+                            <li>
+                                <span class="icon">📱</span>
+                                Mobile & desktop access
+                            </li>
+                            <li>
+                                <span class="icon">♾️</span>
+                                Lifetime access
+                            </li>
+                            <li>
+                                <span class="icon">📝</span>
+                                Downloadable resources
+                            </li>
                         </ul>
                         {% endif %}
+                        
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-</div>
+</section>
+
 {% endblock content %}

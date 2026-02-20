@@ -1,6 +1,7 @@
 
-from django.contrib import admin
 from django.urls import path, include
+
+from apps.core.admin import admin_site
 
 # To display Images
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('accounts/', include('allauth.urls')),
     path('users/', include('apps.users.urls')),
     path('profile/', include('apps.core.urls')),  # Profile management

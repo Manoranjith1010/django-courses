@@ -4,12 +4,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="EDU E-Learning Platform">
-    <meta name="author" content="EDU Team">
+    <meta name="description" content="LaunchDev - Learn to code with expert-led courses">
+    <meta name="author" content="LaunchDev Team">
+    {% block meta %}{% endblock meta %}
 
     <title>
       {% block title %}
-      EDU - Online Learning
+      LaunchDev - Online Learning
       {% endblock title %}
     </title>
 
@@ -22,28 +23,19 @@
     <link rel="apple-touch-icon" href="{% static 'images/favicon.jpg' %}" sizes="180x180">
     <link rel="icon" href="{% static 'images/favicon.jpg' %}" sizes="32x32" type="image/jpg">
     <link rel="icon" href="{% static 'images/favicon.jpg' %}" sizes="16x16" type="image/jpg">
-    <meta name="theme-color" content="#563d7c">
+    <meta name="theme-color" content="#2563EB">
 
-    <!-- Global smooth UI styling -->
-    <style>
-      body {
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      }
-      .navbar {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      }
-    </style>
-
-    <!-- Custom styles for this template -->
+    <!-- Custom styles for lecture player -->
+    <link href="{% static 'css/base.css'%}" rel="stylesheet">
     <link href="{% static 'css/dashboard.css'%}" rel="stylesheet">
+    <link href="{% static 'css/lecture-player.css'%}" rel="stylesheet">
   </head>
-  <body>
+  <body class="lecture-page">
     <!-- Modern Bootstrap 5 Navbar -->
-    <nav class="navbar navbar-light bg-white sticky-top border-bottom py-2">
+    <nav class="navbar navbar-light bg-white sticky-top border-bottom py-2 lecture-navbar">
       <div class="container-fluid px-3">
-        <a class="navbar-brand d-flex align-items-center" href="{% url 'courses:home' %}">
-          <img src="{% static 'images/logo.png' %}" alt="EDU" width="32" class="me-2" />
-          <span class="fw-semibold">EDU</span>
+        <a class="navbar-brand logo-brand d-flex align-items-center" href="{% url 'courses:home' %}">
+          <span class="brand-launch">Launch</span><span class="brand-dev">Dev</span>
         </a>
         <button class="navbar-toggler d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -55,14 +47,14 @@
               {% if redirect_field_value %}
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
               {% endif %}
-              <button type="submit" class="btn btn-outline-secondary btn-sm">Log Out</button>
+              <button type="submit" class="btn-logout">Log Out</button>
             </form>
           </li>
         </ul>
       </div>
     </nav>
 
-    <div class="container-fluid">
+    <div class="lecture-layout">
       {% block content %}
       {% endblock content %}
     </div>

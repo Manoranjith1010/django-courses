@@ -24,14 +24,15 @@ COURSE_LIST_FIELDS = [
 
 
 def index(request):
-    """Homepage with featured courses."""
+    """Homepage with recent courses."""
     courses = (
         Course.objects
-        .filter(course_is_active=True, course_is_featured=True)
+        .filter(course_is_active=True)
         .only(*COURSE_LIST_FIELDS)
         .prefetch_related('course_topic')
+        .order_by('-course_created_at')
     )
-    courses_page = paginate_queryset(courses, request, per_page=6)
+    courses_page = paginate_queryset(courses, request, per_page=8)
     
     return render(request, 'courses/index.html', {
         'courses': courses_page,

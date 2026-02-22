@@ -14,6 +14,7 @@ urlpatterns = [
     path('users/', include('apps.users.urls')),
     path('profile/', include('apps.core.urls')),  # Profile management
     path('', include('apps.courses.urls')),  # Homepage and courses at root
+    path('tinymce/', include('tinymce.urls')),  # TinyMCE rich-text editor
 ]
 # To Display Images while onlocal server
 if settings.DEBUG:

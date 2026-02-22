@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -59,7 +60,7 @@ class Course(models.Model):
 
 class Lecture(models.Model):
     lecture_title = models.CharField(max_length=255, verbose_name="Lecture Title")
-    lecture_slug = models.SlugField(db_index=True, verbose_name="Lecture Slug")
+    lecture_slug = models.SlugField(db_index=True, blank=True, verbose_name="Lecture Slug")
     lecture_description = models.TextField(blank=True, null=True, verbose_name="Lecture Description")
     course = models.ForeignKey(Course, related_name="lectures", verbose_name="Course", on_delete=models.CASCADE)
     lecture_file = models.FileField(upload_to="files/", blank=True, null=True)
@@ -87,6 +88,18 @@ class Lecture(models.Model):
 
     def __str__(self):
         return self.lecture_title
+
+    def save(self, *args, **kwargs):
+        if not self.lecture_slug:
+            base_slug = slugify(self.lecture_title)
+            slug = base_slug
+            counter = 1
+            # Ensure unique slug within the same course
+            while Lecture.objects.filter(course=self.course, lecture_slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.lecture_slug = slug
+        super().save(*args, **kwargs)
 
 
 class Enroll(models.Model):

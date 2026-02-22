@@ -1,25 +1,33 @@
-<!-- Clean minimal sidebar -->
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-  <div class="position-sticky pt-4 px-3">
+<!-- Modern Lecture Sidebar -->
+<aside id="sidebarMenu" class="lecture-sidebar col-md-3 col-lg-2 d-md-block collapse">
+  <div class="sidebar-inner">
     <!-- Course title header -->
-    <a class="d-block text-decoration-none mb-4" href="{% url 'courses:lecture' course.course_slug %}">
-      <h6 class="text-dark fw-semibold mb-0">{{ course.course_title|truncatewords:5 }}</h6>
+    <a class="sidebar-course-link" href="{% url 'courses:lecture' course.course_slug %}">
+      <h6 class="sidebar-course-title">{{ course.course_title|truncatewords:5 }}</h6>
     </a>
 
     <!-- Lecture list -->
-    <p class="text-muted small text-uppercase mb-2" style="letter-spacing: 0.05em;">Lectures</p>
-    <ul class="nav flex-column">
+    <p class="sidebar-section-label">Curriculum</p>
+    <ul class="lecture-list">
       {% if lectures %}
         {% for lecture in lectures %}
-          <li class="nav-item">
-            <a class="nav-link px-2 py-2 rounded {% if lecture.id == lecture_selected.id %}active bg-primary text-white{% else %}text-secondary{% endif %}" 
+          <li class="lecture-list-item">
+            <a class="lecture-link {% if lecture.id == lecture_selected.id %}active{% endif %}" 
                href="{% url 'courses:lecture-selected' course.course_slug lecture.lecture_slug %}">
-              <span class="me-2">{% if lecture.id == lecture_selected.id %}&#9658;{% else %}&#9675;{% endif %}</span>
-              {{ lecture.lecture_title|truncatewords:6 }}
+              <!-- Play icon SVG -->
+              <svg class="lecture-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                {% if lecture.id == lecture_selected.id %}
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                {% else %}
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                {% endif %}
+              </svg>
+              <span class="lecture-title">{{ lecture.lecture_title|truncatewords:6 }}</span>
             </a>
           </li>
         {% endfor %}
       {% endif %}
     </ul>
   </div>
-</nav>
+</aside>

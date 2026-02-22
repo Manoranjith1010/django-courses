@@ -1,12 +1,27 @@
 from django import forms
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from tinymce.widgets import TinyMCE
 
 from apps.core.admin import admin_site
 from .models import Topic, Course, Lecture, Enroll, LectureProgress, Review
 
 
+class TopicAdminForm(forms.ModelForm):
+    # Override the description field to use the WYSIWYG editor
+    topic_description = forms.CharField(
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
+        required=False,
+        label="Topic Description"
+    )
+
+    class Meta:
+        model = Topic
+        fields = "__all__"
+
+
 class TopicAdmin(admin.ModelAdmin):
+    form = TopicAdminForm
     list_display = ('topic_title', 'topic_slug', 'topic_is_active')
     list_editable = ('topic_slug', 'topic_is_active')
     list_filter = ('topic_is_active', 'topic_created_at')
@@ -26,6 +41,13 @@ class CourseAdmin(admin.ModelAdmin):
 
 
 class LectureAdminForm(forms.ModelForm):
+    # Override the description field to use the WYSIWYG editor
+    lecture_description = forms.CharField(
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
+        required=False,
+        label="Lecture Description / Notes"
+    )
+
     class Meta:
         model = Lecture
         fields = "__all__"
@@ -35,6 +57,7 @@ class LectureAdminForm(forms.ModelForm):
         course = cleaned_data.get("course")
         lecture_slug = cleaned_data.get("lecture_slug")
 
+        # Only validate uniqueness if slug is manually provided
         if course and lecture_slug:
             exists = (
                 Lecture.objects.filter(course=course, lecture_slug=lecture_slug)
@@ -54,7 +77,7 @@ class LectureAdminForm(forms.ModelForm):
 class LectureAdmin(admin.ModelAdmin):
     form = LectureAdminForm
     list_display = ('lecture_title', 'course', 'lecture_slug', 'lecture_previewable')
-    list_editable = ('lecture_slug', 'lecture_previewable')
+    list_editable = ('lecture_previewable',)
     list_filter = ('lecture_previewable', 'lecture_created_at', 'course')
     list_per_page = 10
     search_fields = ('lecture_title', 'lecture_description', 'course__course_title')

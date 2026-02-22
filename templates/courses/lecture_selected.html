@@ -11,7 +11,7 @@
 {% endblock meta %}
 
 {% block content %}
-    <div class="row g-0">
+    <div class="lecture-container">
 
 
     {% comment %} Lecture Sidebar Goes Here {% endcomment %}
@@ -19,43 +19,58 @@
 
 
 
-    <main role="main" class="col-md-9 col-lg-10">
+    <main role="main" class="lecture-main">
 
         {% if lecture_selected %}
 
-                <!-- Full-width video section -->
+                <!-- Video Player Section -->
                 {% if lecture_selected.lecture_file %}
-                    <div class="bg-dark">
-                        <video controls class="w-100" preload="metadata" style="max-height: 70vh; background: #000;">
+                    <div class="video-player-wrapper">
+                        <video controls class="video-player" preload="metadata">
                             <source src="{{ lecture_selected.lecture_file.url }}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
                     </div>
                 {% endif %}
 
-                <div class="p-4">
-                    <div class="d-flex justify-content-between flex-wrap align-items-center mb-3">
-                        <h1 class="h4 mb-0">{{ lecture_selected.lecture_title }}</h1>
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <h1 class="lecture-title-main">{{ lecture_selected.lecture_title }}</h1>
+                    <div class="action-bar-buttons">
                         {% if lecture_selected.lecture_file %}
-                        <a href="{{ lecture_selected.lecture_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                        <a href="{{ lecture_selected.lecture_file.url }}" target="_blank" class="btn-action btn-download">
+                            <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
                             Download
                         </a>
                         {% endif %}
                     </div>
-
-                    {% if not lecture_selected.lecture_file %}
-                        <div class="alert alert-warning">Video file is not available for this lecture.</div>
-                    {% endif %}
-
-                    {% if lecture_selected.lecture_description %}
-                    <div class="card border-0 bg-light">
-                        <div class="card-body">
-                            <h6 class="text-muted mb-2">Description</h6>
-                            <p class="mb-0">{{ lecture_selected.lecture_description }}</p>
-                        </div>
-                    </div>
-                    {% endif %}
                 </div>
+
+                {% if not lecture_selected.lecture_file %}
+                    <div class="lecture-alert alert-warning">
+                        <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Video file is not available for this lecture.
+                    </div>
+                {% endif %}
+
+                <!-- Lecture Notes Section -->
+                {% if lecture_selected.lecture_description %}
+                <article class="lecture-notes">
+                    <h2 class="notes-heading">Lecture Notes</h2>
+                    
+                    <section class="notes-section">
+                        {{ lecture_selected.lecture_description|safe }}
+                    </section>
+                </article>
+                {% endif %}
             
         {% endif %}
 

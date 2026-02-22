@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.github',
+
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -232,4 +234,16 @@ SOCIALACCOUNT_PROVIDERS = {
             'read:org',
         ],
     }
+}
+
+
+# TinyMCE Configuration
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'silver',
+    'height': 500,
+    'width': 'auto',
+    'menubar': 'file edit view insert format tools table help',
+    'plugins': 'advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste help wordcount codesample',
+    'toolbar': 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | codesample code | removeformat | help',
+    'custom_undo_redo_levels': 10,
 }

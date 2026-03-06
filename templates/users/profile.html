@@ -1,74 +1,80 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Profile{% endblock %}
+{% block title %}{{ user.username }}'s Profile | LaunchDev{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="py-5" style="background:#F8FAFC;min-height:80vh;">
+  <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Profile Header Card -->
-            <div class="card mb-4 fade-in">
-                <div class="card-body text-center py-5">
-                    {% if profile.avatar %}
-                        <img src="{{ profile.avatar.url }}" alt="Avatar" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
-                    {% else %}
-                        <div class="avatar-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 120px; height: 120px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 2.5rem; font-weight: 600;">
-                            {{ user.username|first|upper }}
-                        </div>
-                    {% endif %}
-                    <h2 class="mb-1">{{ user.get_full_name|default:user.username }}</h2>
-                    <p class="text-muted mb-3">{{ user.email }}</p>
-                    <a href="{% url 'users:profile_edit' %}" class="btn btn-primary">
-                        <span data-feather="edit-2"></span> Edit Profile
-                    </a>
-                </div>
+      <div class="col-lg-8">
+
+        <!-- Profile Header -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius:16px;">
+          <div class="card-body text-center py-5">
+            {% if profile.avatar %}
+              <img src="{{ profile.avatar.url }}" alt="Profile photo"
+                   class="rounded-circle mb-3"
+                   style="width:100px;height:100px;object-fit:cover;border:3px solid #e5e7eb;">
+            {% else %}
+              <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center fw-bold"
+                   style="width:100px;height:100px;background:linear-gradient(135deg,#2563EB,#1D4ED8);color:white;font-size:2.5rem;">
+                {{ user.username|first|upper }}
+              </div>
+            {% endif %}
+
+            <h2 class="fw-bold mb-1" style="font-size:1.4rem;">{{ user.get_full_name|default:user.username }}</h2>
+            <p class="text-muted small mb-3">{{ user.email }}</p>
+
+            <a href="{% url 'users:profile_edit' %}" class="btn btn-primary btn-sm px-4" style="border-radius:8px;">
+              Edit Profile
+            </a>
+          </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+          <div class="card-header bg-white border-bottom px-4 py-3" style="border-radius:16px 16px 0 0;">
+            <h5 class="fw-semibold mb-0" style="font-size:0.95rem;">Profile Information</h5>
+          </div>
+          <div class="card-body px-4">
+
+            <div class="row py-3 border-bottom">
+              <div class="col-sm-4 text-muted small fw-medium">Bio</div>
+              <div class="col-sm-8 small">{{ profile.bio|default:"Not provided" }}</div>
+            </div>
+            {% if profile.phone_number %}
+            <div class="row py-3 border-bottom">
+              <div class="col-sm-4 text-muted small fw-medium">Phone</div>
+              <div class="col-sm-8 small">{{ profile.phone_number }}</div>
+            </div>
+            {% endif %}
+            {% if profile.preferred_language %}
+            <div class="row py-3 border-bottom">
+              <div class="col-sm-4 text-muted small fw-medium">Language</div>
+              <div class="col-sm-8 small">{{ profile.preferred_language|upper }}</div>
+            </div>
+            {% endif %}
+            <div class="row py-3 border-bottom">
+              <div class="col-sm-4 text-muted small fw-medium">Email Notifications</div>
+              <div class="col-sm-8 small">
+                {% if profile.email_notifications %}
+                  <span class="badge bg-success">Enabled</span>
+                {% else %}
+                  <span class="badge bg-secondary">Disabled</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row py-3">
+              <div class="col-sm-4 text-muted small fw-medium">Member Since</div>
+              <div class="col-sm-8 small">{{ user.date_joined|date:"F j, Y" }}</div>
             </div>
 
-            <!-- Profile Details Card -->
-            <div class="card fade-in">
-                <div class="card-header">
-                    <h5 class="mb-0">Profile Information</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Bio</div>
-                        <div class="col-sm-8">{{ profile.bio|default:"Not provided" }}</div>
-                    </div>
-                    <hr>
-                    <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Phone Number</div>
-                        <div class="col-sm-8">{{ profile.phone_number|default:"Not provided" }}</div>
-                    </div>
-                    <hr>
-                    <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Date of Birth</div>
-                        <div class="col-sm-8">{{ profile.date_of_birth|default:"Not provided" }}</div>
-                    </div>
-                    <hr>
-                    <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Preferred Language</div>
-                        <div class="col-sm-8">{{ profile.preferred_language|upper }}</div>
-                    </div>
-                    <hr>
-                    <div class="row mb-3">
-                        <div class="col-sm-4 text-muted">Email Notifications</div>
-                        <div class="col-sm-8">
-                            {% if profile.email_notifications %}
-                                <span class="badge bg-success">Enabled</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Disabled</span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-4 text-muted">Member Since</div>
-                        <div class="col-sm-8">{{ user.date_joined|date:"F d, Y" }}</div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

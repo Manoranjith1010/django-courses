@@ -1,103 +1,290 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-All Courses
-{% endblock title %}
+{% block title %}All Courses | LaunchDev{% endblock %}
 
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   COURSES PAGE — Enterprise Design System
+══════════════════════════════════════════ */
+:root {
+  --c-bg:      #F7F6F3;
+  --c-white:   #FFFFFF;
+  --c-ink:     #111318;
+  --c-sub:     #6B7280;
+  --c-border:  #E5E3DC;
+  --c-primary: #1A56DB;
+  --c-accent:  #0D9488;
+  --shadow-hover: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 14px;
+  --font-head: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+body { font-family: var(--font-body); background: var(--c-bg); }
+
+.courses-page { min-height: 100vh; padding: 48px 0 80px; }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  margin-bottom: 40px; padding-bottom: 32px;
+  border-bottom: 1px solid var(--c-border);
+}
+.page-header__left h1 {
+  font-family: var(--font-head); font-size: 2.6rem; font-weight: 900;
+  color: var(--c-ink); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 6px;
+}
+.page-header__left p { font-size: 0.95rem; color: var(--c-sub); margin: 0; }
+.course-count-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--c-ink); color: #fff;
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+  padding: 8px 18px; border-radius: 40px;
+}
+.course-count-pill span { color: #A3E635; font-size: 1rem; font-weight: 700; }
+
+/* ── FILTER BAR ── */
+.filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 36px; }
+.filter-chip {
+  font-size: 0.78rem; font-weight: 500; letter-spacing: 0.03em;
+  color: var(--c-sub); background: var(--c-white); border: 1px solid var(--c-border);
+  padding: 7px 16px; border-radius: 40px; cursor: pointer;
+  transition: all 0.18s; text-decoration: none; display: inline-block;
+}
+.filter-chip:hover, .filter-chip.active {
+  background: var(--c-ink); border-color: var(--c-ink); color: #fff;
+}
+
+/* ── COURSE GRID ── */
+.courses-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 991px) { .courses-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 575px)  { .courses-grid { grid-template-columns: 1fr; } }
+
+/* ── COURSE CARD ── */
+.course-card {
+  background: var(--c-white); border: 1px solid var(--c-border);
+  border-radius: var(--radius); overflow: hidden;
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  min-width: 0; /* prevent grid blowout */
+  width: 100%;  /* fill the grid track */
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s;
+  animation: cardIn 0.5s ease both;
+}
+.course-card:hover {
+  transform: translateY(-5px); box-shadow: var(--shadow-hover);
+  border-color: transparent; color: inherit; text-decoration: none;
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.course-card:nth-child(1) { animation-delay: 0.05s; }
+.course-card:nth-child(2) { animation-delay: 0.10s; }
+.course-card:nth-child(3) { animation-delay: 0.15s; }
+.course-card:nth-child(4) { animation-delay: 0.20s; }
+.course-card:nth-child(5) { animation-delay: 0.25s; }
+.course-card:nth-child(6) { animation-delay: 0.30s; }
+
+/* ── CARD THUMBNAIL ── */
+.card-thumb {
+  position: relative; width: 100%; aspect-ratio: 16/9;
+  overflow: hidden; background: #E8E6E0; flex-shrink: 0;
+}
+.card-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s ease; display: block;
+}
+.course-card:hover .card-thumb img { transform: scale(1.04); }
+.card-thumb__placeholder {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-head); font-size: 1.3rem; font-weight: 700;
+  color: rgba(255,255,255,0.9); letter-spacing: -0.02em;
+  padding: 16px; text-align: center; line-height: 1.3;
+}
+.course-card:nth-child(3n+1) .card-thumb__placeholder { background: linear-gradient(135deg,#1A56DB,#0D9488); }
+.course-card:nth-child(3n+2) .card-thumb__placeholder { background: linear-gradient(135deg,#7C3AED,#DB2777); }
+.course-card:nth-child(3n+3) .card-thumb__placeholder { background: linear-gradient(135deg,#D97706,#DC2626); }
+
+.card-ribbon {
+  position: absolute; top: 12px; left: 12px;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 4px; backdrop-filter: blur(8px);
+}
+.card-ribbon--featured { background: rgba(16,185,129,0.9); color: #fff; }
+.card-ribbon--new      { background: rgba(59,130,246,0.9);  color: #fff; }
+.card-ribbon--free     { background: rgba(0,0,0,0.55);       color: #fff; }
+
+/* ── CARD BODY ── */
+.card-body-inner { padding: 20px 20px 16px; display: flex; flex-direction: column; flex: 1; }
+.card-provider { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.card-provider__logo {
+  width: 22px; height: 22px; border-radius: 4px;
+  background: linear-gradient(135deg, #1A56DB, #0D9488);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem; font-weight: 800; color: #fff;
+  letter-spacing: 0.03em; flex-shrink: 0;
+}
+.card-provider__name { font-size: 0.72rem; font-weight: 600; color: var(--c-sub); }
+.card-title {
+  font-family: var(--font-head); font-size: 1.05rem; font-weight: 700;
+  color: var(--c-ink); line-height: 1.35; margin-bottom: 8px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-desc {
+  font-size: 0.82rem; color: var(--c-sub); line-height: 1.6; margin-bottom: 0; flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.card-footer-strip {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; border-top: 1px solid var(--c-border); background: #FAFAF8;
+}
+.card-footer-type { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--c-sub); }
+.card-footer-time { font-size: 0.68rem; color: #9CA3AF; }
+.card-footer-btn { font-size: 0.72rem; font-weight: 600; color: var(--c-primary); display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
+.course-card:hover .card-footer-btn { gap: 8px; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  grid-column: 1 / -1; text-align: center; padding: 72px 32px;
+  background: var(--c-white); border: 1px dashed var(--c-border); border-radius: var(--radius);
+}
+.empty-state svg { color: #D1D5DB; margin-bottom: 20px; }
+.empty-state h4 { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--c-ink); margin-bottom: 8px; }
+.empty-state p { font-size: 0.9rem; color: var(--c-sub); margin-bottom: 24px; }
+
+/* ── PAGINATION ── */
+.courses-pagination { display: flex; justify-content: center; gap: 8px; margin-top: 56px; flex-wrap: wrap; }
+.page-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+  border: 1px solid var(--c-border); background: var(--c-white); color: var(--c-sub);
+  text-decoration: none; transition: all 0.15s;
+}
+.page-btn:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.page-btn.active { background: var(--c-primary); border-color: var(--c-primary); color: #fff; }
+.page-btn.disabled { opacity: 0.4; pointer-events: none; }
+.page-btn--wide { width: auto; padding: 0 14px; }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="album py-5 bg-dot-grid">
-    <div class="container">
+<div class="courses-page">
+  <div class="container">
 
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">All Courses</h1>
-        {% if courses %}
-        <span class="badge bg-secondary">{{ courses|length }} courses</span>
-        {% endif %}
+    <!-- ══ PAGE HEADER ══ -->
+    <div class="page-header">
+      <div class="page-header__left">
+        <h1>All Courses</h1>
+        <p>Expert-led courses to build your tech career</p>
       </div>
+      {% if page_obj %}
+      <div class="course-count-pill">
+        <span>{{ page_obj.paginator.count }}</span> course{{ page_obj.paginator.count|pluralize }}
+      </div>
+      {% elif courses %}
+      <div class="course-count-pill">
+        <span>{{ courses|length }}</span> course{{ courses|length|pluralize }}
+      </div>
+      {% endif %}
+    </div>
 
-      <div class="row g-4">
-      
+    <!-- ══ FILTER CHIPS ══ -->
+    <div class="filter-bar">
+      <a href="{% url 'courses:courses' %}" class="filter-chip active">All Topics</a>
+      {% for topic in topics %}
+      <a href="{% url 'courses:topic-courses' topic.topic_slug %}" class="filter-chip">{{ topic }}</a>
+      {% endfor %}
+    </div>
+
+    <!-- ══ COURSE GRID ══ -->
+    <div class="courses-grid">
+
       {% if courses %}
         {% for course in courses %}
-          <div class="col-12 col-sm-6 col-lg-4 d-flex">
-            <div class="card course-card border-0 shadow-sm h-100 w-100 overflow-hidden">
-              <a href="{% url 'courses:course-detail' course.course_slug %}" class="text-decoration-none text-dark">
-              {% if course.course_image %}
-              <div class="overflow-hidden">
-                <img src="{{ course.course_image.url }}" class="card-img-top course-card-image" alt="{{ course.course_title }}">
-              </div>
-              {% else %}
-              <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>{{ course.course_title }}</title><rect width="100%" height="100%" fill="#6c757d"/><text x="50%" y="50%" fill="#fff" dy=".3em">{{ course.course_title|truncatewords:2 }}</text></svg>
-              {% endif %}
-              </a>
-              <div class="card-body p-3 d-flex flex-column">
-                <h5 class="card-title mb-2">{{ course.course_title }}</h5>
-                <p class="card-text text-muted small mb-3">{{ course.course_description|truncatewords:15|default:"Learn essential skills with hands-on projects and expert guidance." }}</p>
-                <div class="d-flex justify-content-between align-items-center mt-auto">
-                  <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-sm btn-primary">View Course</a>
-                  <small class="text-muted">{{ course.course_created_at|timesince }} ago</small>
-                </div>
-              </div>
-            </div>
+        <a href="{% url 'courses:course-detail' course.course_slug %}" class="course-card">
+
+          <div class="card-thumb">
+            {% if course.course_image %}
+              <img src="{{ course.course_image.url }}" alt="{{ course.course_title }}" loading="lazy">
+            {% else %}
+              <div class="card-thumb__placeholder">{{ course.course_title }}</div>
+            {% endif %}
+
+            {% if forloop.first %}
+              <span class="card-ribbon card-ribbon--featured">Featured</span>
+            {% elif forloop.counter == 2 %}
+              <span class="card-ribbon card-ribbon--new">New</span>
+            {% else %}
+              <span class="card-ribbon card-ribbon--free">Free</span>
+            {% endif %}
           </div>
+
+          <div class="card-body-inner">
+            <div class="card-provider">
+              <div class="card-provider__logo">LD</div>
+              <span class="card-provider__name">LaunchDev</span>
+            </div>
+            <h3 class="card-title">{{ course.course_title }}</h3>
+            <p class="card-desc">
+              {{ course.course_description|truncatewords:18|default:"Learn essential skills with hands-on projects and expert guidance." }}
+            </p>
+          </div>
+
+          <div class="card-footer-strip">
+            <span class="card-footer-type">Course</span>
+            <span class="card-footer-btn">View Course →</span>
+            <span class="card-footer-time">{{ course.course_created_at|timesince }} ago</span>
+          </div>
+
+        </a>
         {% endfor %}
+
       {% else %}
-        <!-- Engaging Empty State -->
-        <div class="col-12">
-          <div class="text-center py-5">
-            <div class="mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="text-muted" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
-              </svg>
-            </div>
-            <h4 class="text-dark mb-2">No courses available yet</h4>
-            <p class="text-muted mb-4">We're working on bringing you great content. Stay tuned!</p>
-            <a href="{% url 'courses:home' %}" class="btn btn-outline-primary">Back to Home</a>
-          </div>
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+          </svg>
+          <h4>No courses available yet</h4>
+          <p>We're working on amazing content. Check back soon!</p>
+          <a href="{% url 'courses:home' %}" class="btn btn-primary px-4" style="border-radius:10px;">Back to Home</a>
         </div>
       {% endif %}
 
-      </div>
-
-      {% if page_obj and page_obj.paginator.num_pages > 1 %}
-      <nav aria-label="Course pages" class="mt-5">
-        <ul class="pagination justify-content-center">
-          {% if page_obj.has_previous %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
-          </li>
-          {% else %}
-          <li class="page-item disabled">
-            <span class="page-link">Previous</span>
-          </li>
-          {% endif %}
-
-          {% for num in page_obj.paginator.page_range %}
-          {% if page_obj.number == num %}
-          <li class="page-item active" aria-current="page">
-            <span class="page-link">{{ num }}</span>
-          </li>
-          {% else %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-          </li>
-          {% endif %}
-          {% endfor %}
-
-          {% if page_obj.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
-          </li>
-          {% else %}
-          <li class="page-item disabled">
-            <span class="page-link">Next</span>
-          </li>
-          {% endif %}
-        </ul>
-      </nav>
-      {% endif %}
     </div>
+
+    <!-- ══ PAGINATION ══ -->
+    {% if page_obj and page_obj.paginator.num_pages > 1 %}
+    <nav aria-label="Course pages" class="courses-pagination">
+
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="page-btn page-btn--wide">← Prev</a>
+      {% else %}
+      <span class="page-btn page-btn--wide disabled">← Prev</span>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <span class="page-btn active">{{ num }}</span>
+        {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+          <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="page-btn page-btn--wide">Next →</a>
+      {% else %}
+      <span class="page-btn page-btn--wide disabled">Next →</span>
+      {% endif %}
+
+    </nav>
+    {% endif %}
+
   </div>
-{% endblock content %}
+</div>
+{% endblock %}

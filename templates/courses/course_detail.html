@@ -1,194 +1,169 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-    {{ course.seo_course_title|default:course.course_title }} | LaunchDev
-{% endblock title %}
+{% block title %}{{ course.seo_course_title|default:course.course_title }} | LaunchDev{% endblock %}
 
 {% block meta %}
-    <meta name="description" content="{{ course.seo_course_description }}">
-    <meta name="keywords" content="{{ course.seo_course_keywords }}">
-{% endblock meta %}
+<meta name="description" content="{{ course.seo_course_description }}">
+<meta name="keywords" content="{{ course.seo_course_keywords }}">
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'css/course-detail.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
-
-{% include 'partials/_messages.html' %}
-
-<!-- Course Detail Stylesheet -->
-<link href="{% static 'css/course-detail.css' %}" rel="stylesheet">
-
 <section class="course-detail">
-    <div class="container">
-        <div class="row">
-            
-            <!-- Main Content Column -->
-            <div class="col-lg-8">
-                
-                <!-- Hero Image - Constrained -->
-                {% if course.course_image %}
-                <img src="{{ course.course_image.url }}" 
-                     class="course-hero-image" 
-                     alt="{{ course.course_title }}">
-                {% endif %}
+  <div class="container">
+    <div class="row g-5">
 
-                <!-- Course Title -->
-                <h1 class="course-title">{{ course.course_title }}</h1>
+      <!-- ═══ MAIN COLUMN ═══ -->
+      <div class="col-lg-8">
 
-                <!-- Course Description - Structured with Semantic HTML -->
-                <div class="course-description">
-                    
-                    {% if course.course_description %}
-                    <!-- Overview Section -->
-                    <h2 class="course-section-title">Course Overview</h2>
-                    <p>{{ course.course_description }}</p>
-                    {% endif %}
+        {% if course.course_image %}
+        <img src="{{ course.course_image.url }}"
+             class="course-hero-image mb-4"
+             alt="{{ course.course_title }}">
+        {% endif %}
 
-                    <!-- What You'll Learn Section -->
-                    <h2 class="course-section-title">What You'll Learn</h2>
-                    <ul class="course-features">
-                        <li>Master core concepts and fundamentals</li>
-                        <li>Build real-world projects from scratch</li>
-                        <li>Learn industry best practices and patterns</li>
-                        <li>Gain hands-on experience with practical exercises</li>
-                        <li>Get lifetime access to course materials</li>
-                    </ul>
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+          <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a href="{% url 'courses:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'courses:courses' %}">Courses</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ course.course_title|truncatewords:5 }}</li>
+          </ol>
+        </nav>
 
-                    <!-- Why This Course Section -->
-                    <h2 class="course-section-title">Why Choose This Course?</h2>
-                    <p>
-                        This course is designed for learners who want to build practical skills 
-                        quickly. Our structured curriculum takes you from beginner to confident 
-                        practitioner through hands-on projects and real-world examples.
-                    </p>
-                    
-                    <h3 class="course-subsection-title">Course Benefits</h3>
-                    <ul class="course-features bullet-style">
-                        <li>Self-paced learning — study on your own schedule</li>
-                        <li>Expert instruction with clear explanations</li>
-                        <li>Downloadable resources and code examples</li>
-                        <li>Mobile-friendly — learn anywhere, anytime</li>
-                    </ul>
+        <h1 class="course-title">{{ course.course_title }}</h1>
 
-                </div>
+        <div class="course-description">
 
-                <!-- Course Content List -->
-                {% if lectures %}
-                <div class="course-content-card">
-                    <div class="course-content-header">
-                        <h3>Course Content</h3>
-                        <span class="lecture-count-badge">{{ lectures|length }} lectures</span>
-                    </div>
-                    
-                    <div class="lecture-list">
-                        {% for lecture in lectures %}
-                        <div class="lecture-item">
-                            <span class="lecture-title">
-                                {% if enrolled %}
-                                <span class="lecture-icon unlocked">▶</span>
-                                {% else %}
-                                <span class="lecture-icon locked">🔒</span>
-                                {% endif %}
-                                {{ lecture.lecture_title }}
-                            </span>
-                            
-                            {% if enrolled %}
-                            <button type="button" 
-                                    class="btn btn-sm btn-outline-primary" 
-                                    data-toggle="modal" 
-                                    data-target="#Modal{{ lecture.id }}">
-                                Watch
-                            </button>
-                            {% endif %}
-                        </div>
+          {% if course.course_description %}
+          <h2 class="course-section-title">Course Overview</h2>
+          <p>{{ course.course_description }}</p>
+          {% endif %}
 
-                        {% if enrolled %}
-                        <!-- Video Modal -->
-                        <div class="modal fade" id="Modal{{ lecture.id }}" tabindex="-1" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header border-0">
-                                        <h6 class="modal-title">{{ lecture.lecture_title }}</h6>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body p-0">
-                                        {% if lecture.lecture_file %}
-                                        <video width="100%" controls preload="metadata">
-                                            <source src="{{ lecture.lecture_file.url }}" type="video/mp4">
-                                        </video>
-                                        {% else %}
-                                        <div class="alert alert-warning m-3">Video not available.</div>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-                {% endif %}
+          <!-- What You'll Learn — pulled from course model if available, else generic -->
+          <h2 class="course-section-title">What You'll Learn</h2>
+          <ul class="course-features">
+            <li>Master core concepts and apply them in real-world projects</li>
+            <li>Build production-ready applications from scratch</li>
+            <li>Learn industry best practices and modern patterns</li>
+            <li>Gain hands-on experience through practical exercises</li>
+            <li>Access {{ lectures|length }} structured video lectures</li>
+          </ul>
 
-            </div>
-
-            <!-- Sidebar - Sticky Enroll Card -->
-            <div class="col-lg-4">
-                <div class="enroll-sidebar">
-                    <div class="enroll-card">
-                        
-                        {% if enrolled %}
-                        <!-- Enrolled State -->
-                        <a href="{% url 'courses:lecture' course.course_slug %}" 
-                           class="btn-enroll btn-start-learning">
-                            <span class="me-2">▶</span> Start Learning
-                        </a>
-                        <p class="enrollment-status">
-                            <span class="me-1">✓</span> You're enrolled!
-                        </p>
-                        
-                        {% else %}
-                        <!-- Not Enrolled State -->
-                        <div class="price-tag">Free</div>
-                        <a href="{% url 'courses:enroll' course.id %}" 
-                           class="btn-enroll">
-                            Enroll Now
-                        </a>
-                        <p class="subtext">Full lifetime access</p>
-                        {% endif %}
-
-                        {% if lectures %}
-                        <hr>
-                        
-                        <h4 style="font-size: 0.95rem; color: #2D3748; margin-bottom: 0.75rem; font-weight: 600;">
-                            This course includes:
-                        </h4>
-                        <ul class="course-includes">
-                            <li>
-                                <span class="icon">📹</span>
-                                {{ lectures|length }} video lectures
-                            </li>
-                            <li>
-                                <span class="icon">📱</span>
-                                Mobile & desktop access
-                            </li>
-                            <li>
-                                <span class="icon">♾️</span>
-                                Lifetime access
-                            </li>
-                            <li>
-                                <span class="icon">📝</span>
-                                Downloadable resources
-                            </li>
-                        </ul>
-                        {% endif %}
-                        
-                    </div>
-                </div>
-            </div>
+          <h2 class="course-section-title">Why This Course?</h2>
+          <p>
+            Structured curriculum, expert instruction, and practical projects —
+            everything you need to go from beginner to confident practitioner.
+          </p>
+          <ul class="course-features bullet-style">
+            <li>Self-paced — study on your schedule</li>
+            <li>Expert-crafted content with clear explanations</li>
+            <li>Downloadable resources and code examples</li>
+            <li>Mobile-friendly — learn anywhere</li>
+          </ul>
 
         </div>
-    </div>
-</section>
 
-{% endblock content %}
+        <!-- Lecture List -->
+        {% if lectures %}
+        <div class="course-content-card">
+          <div class="course-content-header">
+            <h3>Course Content</h3>
+            <span class="lecture-count-badge">{{ lectures|length }} lecture{{ lectures|length|pluralize }}</span>
+          </div>
+          <div class="lecture-list">
+            {% for lecture in lectures %}
+            <div class="lecture-item">
+              <span class="lecture-title">
+                {% if enrolled %}
+                <span class="lecture-icon unlocked">▶</span>
+                {% else %}
+                <span class="lecture-icon locked">🔒</span>
+                {% endif %}
+                {{ lecture.lecture_title }}
+              </span>
+
+              {% if enrolled %}
+              <!-- Bootstrap 5: data-bs-toggle / data-bs-target -->
+              <button type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#Modal{{ lecture.id }}">
+                Watch
+              </button>
+              {% endif %}
+            </div>
+
+            {% if enrolled %}
+            <!-- Bootstrap 5 Modal — data-bs-dismiss -->
+            <div class="modal fade" id="Modal{{ lecture.id }}" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header border-0">
+                    <h6 class="modal-title fw-semibold">{{ lecture.lecture_title }}</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body p-0">
+                    {% if lecture.lecture_file %}
+                    <video width="100%" controls preload="metadata">
+                      <source src="{{ lecture.lecture_file.url }}" type="video/mp4">
+                    </video>
+                    {% else %}
+                    <div class="alert alert-warning m-3">Video not available yet.</div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <!-- ═══ SIDEBAR ═══ -->
+      <div class="col-lg-4">
+        <div class="enroll-sidebar">
+          <div class="enroll-card">
+
+            {% if enrolled %}
+            <a href="{% url 'courses:lecture' course.course_slug %}" class="btn-enroll btn-start-learning">
+              ▶ Continue Learning
+            </a>
+            <p class="enrollment-status mt-3">✓ You're enrolled!</p>
+
+            {% else %}
+            <div class="price-tag">Free</div>
+            <a href="{% url 'courses:enroll' course.id %}" class="btn-enroll">
+              Enroll Now — It's Free
+            </a>
+            <p class="subtext mt-2">Full lifetime access · No credit card needed</p>
+            {% endif %}
+
+            {% if lectures %}
+            <hr>
+            <h4 class="fw-semibold mb-3" style="font-size:0.9rem;color:#1a202c;">This course includes:</h4>
+            <ul class="course-includes">
+              <li><span class="icon">📹</span> {{ lectures|length }} video lecture{{ lectures|length|pluralize }}</li>
+              <li><span class="icon">📱</span> Mobile &amp; desktop access</li>
+              <li><span class="icon">♾️</span> Lifetime access</li>
+              <li><span class="icon">📝</span> Downloadable resources</li>
+              <li><span class="icon">🏅</span> Certificate on completion</li>
+            </ul>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

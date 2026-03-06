@@ -16,5 +16,5 @@ urlpatterns = [
     path('course/<slug:course_slug>/review/', views.submit_review, name="submit-review"),
 
     path('course/enroll/<int:course_id>/', views.enroll, name="enroll"),
-    
+    path('lecture/<int:lecture_id>/mark-complete/', views.mark_complete, name="mark-complete"),
 ]

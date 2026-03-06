@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db import IntegrityError
 from django.db.models import Avg, Count, Q
 from django.utils import timezone
+from django.http import JsonResponse
 from .models import Topic, Course, Lecture, Enroll, LectureProgress, Review
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -116,15 +117,16 @@ def course_detail(request, course_slug):
         .order_by('id')
     )
     
-    # Get reviews for this course
-    reviews = (
+    # Get reviews for this course — single aggregate query + one list query
+    reviews = list(
         Review.objects
         .filter(course=course)
         .select_related('user')
         .order_by('-created_at')[:10]
     )
-    avg_rating = Review.objects.filter(course=course).aggregate(avg=Avg('rating'))['avg']
-    review_count = Review.objects.filter(course=course).count()
+    _stats = Review.objects.filter(course=course).aggregate(avg=Avg('rating'), count=Count('id'))
+    avg_rating = _stats['avg']
+    review_count = _stats['count']
     
     # Use .exists() for boolean check - more efficient than fetching objects
     enrolled = False
@@ -225,22 +227,13 @@ def lecture(request, course_slug):
     
     if not enrolled:
         messages.error(request, "Enroll Now to access this course.")
-        return redirect('course-detail', course_slug=course_slug)
+        return redirect('courses:course-detail', course_slug=course_slug)
     
     first_lecture = lectures.first()
     
-    # Mark lecture as completed when accessed
-    if first_lecture:
-        progress, created = LectureProgress.objects.get_or_create(
-            user=request.user,
-            lecture=first_lecture,
-            defaults={'completed': True, 'completed_at': timezone.now()}
-        )
-        if not progress.completed:
-            progress.completed = True
-            progress.completed_at = timezone.now()
-            progress.save()
-    
+    # NOTE: lectures are no longer auto-completed on page view.
+    # Use the explicit AJAX endpoint (mark-complete) instead.
+
     # Build navigation context with real progress
     nav_context = {}
     if first_lecture:
@@ -282,20 +275,11 @@ def lecture_selected(request, course_slug, lecture_slug):
     
     if not enrolled:
         messages.error(request, "Enroll Now to access this course.")
-        return redirect('course-detail', course_slug=course_slug)
+        return redirect('courses:course-detail', course_slug=course_slug)
     
-    # Mark lecture as completed when accessed
-    progress, created = LectureProgress.objects.get_or_create(
-        user=request.user,
-        lecture=lecture_selected,
-        defaults={'completed': True, 'completed_at': timezone.now()}
-    )
-    if not progress.completed:
-        progress.completed = True
-        progress.completed_at = timezone.now()
-        progress.save()
-    
-    # Build navigation context with real progress
+    # Build navigation context with real progress (after lecture_selected guard)
+    # NOTE: lectures are no longer auto-completed on page view.
+    # Use the explicit 'mark-complete' AJAX endpoint instead.
     nav_context = _get_lecture_context(course, lectures, lecture_selected, request.user)
     
     context = {
@@ -320,7 +304,7 @@ def enroll(request, course_id):
         return redirect('courses:lecture', course_slug=course.course_slug)
     except IntegrityError:
         messages.error(request, "You are already enrolled in this course.")
-        return redirect('course-detail', course_slug=course.course_slug)
+        return redirect('courses:course-detail', course_slug=course.course_slug)
 
 
 @login_required(login_url='account_login')
@@ -404,3 +388,39 @@ def submit_review(request, course_slug):
         messages.success(request, "Your review has been updated.")
     
     return redirect('courses:course-detail', course_slug=course_slug)
+
+
+@login_required(login_url='account_login')
+def mark_complete(request, lecture_id):
+    """
+    AJAX endpoint — explicitly marks a lecture as complete.
+
+    Called by a 'Mark as Complete' button or video-end event on the
+    lecture page so that completion is an intentional action rather
+    than an automatic side-effect of visiting the page.
+
+    Returns JSON: {"status": "ok", "completed": true}
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+
+    lecture_obj = get_object_or_404(
+        Lecture.objects.select_related('course'),
+        id=lecture_id,
+    )
+
+    # Verify the user is enrolled in the course
+    if not Enroll.objects.filter(course=lecture_obj.course, user=request.user).exists():
+        return JsonResponse({'error': 'Not enrolled'}, status=403)
+
+    progress, _ = LectureProgress.objects.get_or_create(
+        user=request.user,
+        lecture=lecture_obj,
+        defaults={'completed': False},
+    )
+    if not progress.completed:
+        progress.completed = True
+        progress.completed_at = timezone.now()
+        progress.save(update_fields=['completed', 'completed_at'])
+
+    return JsonResponse({'status': 'ok', 'completed': True})

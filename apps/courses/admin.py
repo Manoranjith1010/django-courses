@@ -30,7 +30,21 @@ class TopicAdmin(admin.ModelAdmin):
     prepopulated_fields = {"topic_slug": ("topic_title", )}
 
 
+class CourseAdminForm(forms.ModelForm):
+    # Override the description field to use the WYSIWYG editor
+    course_description = forms.CharField(
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
+        required=False,
+        label="Course Description"
+    )
+
+    class Meta:
+        model = Course
+        fields = "__all__"
+
+
 class CourseAdmin(admin.ModelAdmin):
+    form = CourseAdminForm
     list_display = ('course_title', 'course_slug', 'course_is_active', 'course_is_featured')
     list_editable = ('course_slug', 'course_is_active', 'course_is_featured')
     list_filter = ('course_is_active', 'course_is_featured', 'course_created_at')

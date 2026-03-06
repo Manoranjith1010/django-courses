@@ -1,33 +1,41 @@
-<!-- Modern Lecture Sidebar -->
-<aside id="sidebarMenu" class="lecture-sidebar col-md-3 col-lg-2 d-md-block collapse">
+<!-- Lecture Sidebar — fixed: guards lecture_selected None, Bootstrap 5 collapse -->
+<aside id="sidebarMenu" class="lecture-sidebar d-md-block collapse">
   <div class="sidebar-inner">
+
     <!-- Course title header -->
     <a class="sidebar-course-link" href="{% url 'courses:lecture' course.course_slug %}">
       <h6 class="sidebar-course-title">{{ course.course_title|truncatewords:5 }}</h6>
     </a>
 
-    <!-- Lecture list -->
+    <!-- Curriculum label -->
     <p class="sidebar-section-label">Curriculum</p>
+
     <ul class="lecture-list">
-      {% if lectures %}
-        {% for lecture in lectures %}
-          <li class="lecture-list-item">
-            <a class="lecture-link {% if lecture.id == lecture_selected.id %}active{% endif %}" 
-               href="{% url 'courses:lecture-selected' course.course_slug lecture.lecture_slug %}">
-              <!-- Play icon SVG -->
-              <svg class="lecture-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                {% if lecture.id == lecture_selected.id %}
-                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                {% else %}
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                {% endif %}
-              </svg>
-              <span class="lecture-title">{{ lecture.lecture_title|truncatewords:6 }}</span>
-            </a>
-          </li>
-        {% endfor %}
-      {% endif %}
+      {% for lecture in lectures %}
+        <li class="lecture-list-item">
+          <a class="lecture-link {% if lecture_selected and lecture.id == lecture_selected.id %}active{% endif %}"
+             href="{% url 'courses:lecture-selected' course.course_slug lecture.lecture_slug %}">
+
+            <svg class="lecture-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              {% if lecture_selected and lecture.id == lecture_selected.id %}
+                {# Solid play triangle = currently playing #}
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              {% else %}
+                {# Circle play = not yet playing #}
+                <circle cx="12" cy="12" r="10"></circle>
+                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+              {% endif %}
+            </svg>
+
+            <span class="lecture-title">{{ lecture.lecture_title|truncatewords:6 }}</span>
+          </a>
+        </li>
+      {% empty %}
+        <li class="px-3 py-2 text-muted small">No lectures yet.</li>
+      {% endfor %}
     </ul>
+
   </div>
 </aside>

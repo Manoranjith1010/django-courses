@@ -1,80 +1,122 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Edit Profile | LaunchDev{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="py-5" style="background:#F8FAFC;min-height:80vh;">
+  <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card fade-in">
-                <div class="card-header">
-                    <h5 class="mb-0">Edit Profile</h5>
+      <div class="col-lg-7">
+
+        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+          <div class="card-header bg-white border-bottom px-4 py-3" style="border-radius:16px 16px 0 0;">
+            <h5 class="fw-semibold mb-0" style="font-size:0.95rem;">Edit Profile</h5>
+          </div>
+          <div class="card-body p-4 p-md-5">
+
+            <form method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <!-- Avatar -->
+              <div class="mb-4 text-center">
+                {% if profile.avatar %}
+                  <img id="avatarPreview" src="{{ profile.avatar.url }}" alt="Profile photo"
+                       class="rounded-circle mb-3"
+                       style="width:90px;height:90px;object-fit:cover;border:3px solid #e5e7eb;">
+                {% else %}
+                  <div id="avatarPlaceholder" class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center fw-bold"
+                       style="width:90px;height:90px;background:linear-gradient(135deg,#2563EB,#1D4ED8);color:white;font-size:2rem;">
+                    {{ user.username|first|upper }}
+                  </div>
+                {% endif %}
+                <div>
+                  <label for="avatar" class="btn btn-outline-primary btn-sm" style="border-radius:8px;cursor:pointer;">
+                    Change Photo
+                  </label>
+                  <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*">
                 </div>
-                <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        
-                        <!-- Avatar -->
-                        <div class="mb-4 text-center">
-                            {% if profile.avatar %}
-                                <img src="{{ profile.avatar.url }}" alt="Current Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-                            {% else %}
-                                <div class="avatar-placeholder rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 100px; height: 100px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 2rem; font-weight: 600;">
-                                    {{ user.username|first|upper }}
-                                </div>
-                            {% endif %}
-                            <div>
-                                <label for="avatar" class="btn btn-outline-primary btn-sm">
-                                    <span data-feather="upload"></span> Change Avatar
-                                </label>
-                                <input type="file" name="avatar" id="avatar" class="d-none" accept="image/*">
-                            </div>
-                        </div>
+              </div>
 
-                        <!-- Bio -->
-                        <div class="mb-3">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea name="bio" id="bio" class="form-control" rows="3" placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
-                        </div>
+              <!-- Bio -->
+              <div class="mb-3">
+                <label for="bio" class="form-label fw-medium small">Bio</label>
+                <textarea name="bio" id="bio" class="form-control" rows="3"
+                          placeholder="Tell us about yourself…"
+                          style="border-radius:10px;">{{ profile.bio }}</textarea>
+              </div>
 
-                        <!-- Phone Number -->
-                        <div class="mb-3">
-                            <label for="phone_number" class="form-label">Phone Number</label>
-                            <input type="tel" name="phone_number" id="phone_number" class="form-control" value="{{ profile.phone_number }}" placeholder="+1 (555) 000-0000">
-                        </div>
+              <!-- Phone -->
+              <div class="mb-3">
+                <label for="phone_number" class="form-label fw-medium small">Phone Number</label>
+                <input type="tel" name="phone_number" id="phone_number"
+                       class="form-control"
+                       value="{{ profile.phone_number }}"
+                       placeholder="+1 (555) 000-0000"
+                       style="border-radius:10px;">
+              </div>
 
-                        <!-- Preferred Language -->
-                        <div class="mb-3">
-                            <label for="preferred_language" class="form-label">Preferred Language</label>
-                            <select name="preferred_language" id="preferred_language" class="form-select">
-                                <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English</option>
-                                <option value="es" {% if profile.preferred_language == 'es' %}selected{% endif %}>Spanish</option>
-                                <option value="fr" {% if profile.preferred_language == 'fr' %}selected{% endif %}>French</option>
-                                <option value="de" {% if profile.preferred_language == 'de' %}selected{% endif %}>German</option>
-                                <option value="zh" {% if profile.preferred_language == 'zh' %}selected{% endif %}>Chinese</option>
-                            </select>
-                        </div>
+              <!-- Language -->
+              <div class="mb-3">
+                <label for="preferred_language" class="form-label fw-medium small">Preferred Language</label>
+                <select name="preferred_language" id="preferred_language" class="form-select" style="border-radius:10px;">
+                  <option value="en" {% if profile.preferred_language == 'en' %}selected{% endif %}>English</option>
+                  <option value="es" {% if profile.preferred_language == 'es' %}selected{% endif %}>Spanish</option>
+                  <option value="fr" {% if profile.preferred_language == 'fr' %}selected{% endif %}>French</option>
+                  <option value="de" {% if profile.preferred_language == 'de' %}selected{% endif %}>German</option>
+                  <option value="zh" {% if profile.preferred_language == 'zh' %}selected{% endif %}>Chinese</option>
+                </select>
+              </div>
 
-                        <!-- Email Notifications -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" name="email_notifications" id="email_notifications" class="form-check-input" {% if profile.email_notifications %}checked{% endif %}>
-                                <label for="email_notifications" class="form-check-label">Receive email notifications</label>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <span data-feather="save"></span> Save Changes
-                            </button>
-                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">Cancel</a>
-                        </div>
-                    </form>
+              <!-- Email notifications -->
+              <div class="mb-4">
+                <div class="form-check form-switch">
+                  <input type="checkbox" name="email_notifications" id="email_notifications"
+                         class="form-check-input"
+                         {% if profile.email_notifications %}checked{% endif %}>
+                  <label for="email_notifications" class="form-check-label small">Receive email notifications</label>
                 </div>
-            </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4" style="border-radius:10px;">
+                  Save Changes
+                </button>
+                <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary" style="border-radius:10px;">
+                  Cancel
+                </a>
+              </div>
+
+            </form>
+          </div>
         </div>
+
+      </div>
     </div>
+  </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Avatar live preview
+document.getElementById('avatar').addEventListener('change', function (e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var url = URL.createObjectURL(file);
+  var preview = document.getElementById('avatarPreview');
+  var placeholder = document.getElementById('avatarPlaceholder');
+  if (preview) {
+    preview.src = url;
+  } else if (placeholder) {
+    var img = document.createElement('img');
+    img.id = 'avatarPreview';
+    img.className = 'rounded-circle mb-3';
+    img.style.cssText = 'width:90px;height:90px;object-fit:cover;border:3px solid #e5e7eb;';
+    img.src = url;
+    placeholder.replaceWith(img);
+  }
+});
+</script>
 {% endblock %}

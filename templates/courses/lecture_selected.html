@@ -1,82 +1,138 @@
 {% extends 'base_lecture.html' %}
+{% load static %}
 
-
-{% block title %}
-{{ course.course_title }} | LaunchDev
-{% endblock title %}
+{% block title %}{{ lecture_selected.lecture_title }} — {{ course.course_title }} | LaunchDev{% endblock %}
 
 {% block meta %}
-    <meta name="description" content="{{ course.seo_course_description }}">
-    <meta name="keywords" content="{{ course.seo_course_keywords }}">
-{% endblock meta %}
+<meta name="description" content="{{ course.seo_course_description }}">
+<meta name="keywords" content="{{ course.seo_course_keywords }}">
+{% endblock %}
 
 {% block content %}
-    <div class="lecture-container">
+{% include 'partials/_lecture_sidebar.html' %}
 
+<main class="lecture-main col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
 
-    {% comment %} Lecture Sidebar Goes Here {% endcomment %}
-    {% include 'partials/_lecture_sidebar.html' %}
+  {% include 'partials/_messages.html' %}
 
-
-
-    <main role="main" class="lecture-main">
-
-        {% if lecture_selected %}
-
-                <!-- Video Player Section -->
-                {% if lecture_selected.lecture_file %}
-                    <div class="video-player-wrapper">
-                        <video controls class="video-player" preload="metadata">
-                            <source src="{{ lecture_selected.lecture_file.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                {% endif %}
-
-                <!-- Action Bar -->
-                <div class="action-bar">
-                    <h1 class="lecture-title-main">{{ lecture_selected.lecture_title }}</h1>
-                    <div class="action-bar-buttons">
-                        {% if lecture_selected.lecture_file %}
-                        <a href="{{ lecture_selected.lecture_file.url }}" target="_blank" class="btn-action btn-download">
-                            <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                            Download
-                        </a>
-                        {% endif %}
-                    </div>
-                </div>
-
-                {% if not lecture_selected.lecture_file %}
-                    <div class="lecture-alert alert-warning">
-                        <svg class="alert-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
-                        Video file is not available for this lecture.
-                    </div>
-                {% endif %}
-
-                <!-- Lecture Notes Section -->
-                {% if lecture_selected.lecture_description %}
-                <article class="lecture-notes">
-                    <h2 class="notes-heading">Lecture Notes</h2>
-                    
-                    <section class="notes-section">
-                        {{ lecture_selected.lecture_description|safe }}
-                    </section>
-                </article>
-                {% endif %}
-            
-        {% endif %}
-
-
-    </main>
-
-
+  <!-- ── Video / File Player ──────────────────────────────────────────── -->
+  <div class="lecture-player-wrapper mb-4">
+    {% if lecture_selected.lecture_video %}
+      <div class="ratio ratio-16x9">
+        <iframe
+          src="https://www.youtube.com/embed/{{ lecture_selected.lecture_video }}?rel=0"
+          title="{{ lecture_selected.lecture_title }}"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+      </div>
+    {% elif lecture_selected.lecture_file %}
+      <div class="ratio ratio-16x9">
+        <video controls class="w-100 rounded">
+          <source src="{{ lecture_selected.lecture_file.url }}">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    {% else %}
+      <div class="alert alert-secondary">No media available for this lecture yet.</div>
+    {% endif %}
   </div>
-{% endblock content %}
+
+  <!-- ── Lecture Header ──────────────────────────────────────────────── -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+    <div>
+      <p class="text-muted small mb-1">Lecture {{ current_position }} of {{ total_lectures }}</p>
+      <h2 class="h4 fw-semibold mb-0">{{ lecture_selected.lecture_title }}</h2>
+    </div>
+
+    <!-- Mark as Complete button -->
+    <button id="markCompleteBtn"
+            class="btn btn-sm {% if lecture_selected.id in completed_lecture_ids %}btn-success disabled{% else %}btn-outline-success{% endif %}"
+            data-lecture-id="{{ lecture_selected.id }}"
+            {% if lecture_selected.id in completed_lecture_ids %}disabled aria-disabled="true"{% endif %}>
+      {% if lecture_selected.id in completed_lecture_ids %}
+        ✓ Completed
+      {% else %}
+        Mark as Complete
+      {% endif %}
+    </button>
+  </div>
+
+  <!-- ── Progress Bar ─────────────────────────────────────────────────── -->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between small text-muted mb-1">
+      <span>Course Progress</span>
+      <span>{{ completed_count }}/{{ total_lectures }} lectures ({{ progress_percent }}%)</span>
+    </div>
+    <div class="progress" style="height: 6px;">
+      <div class="progress-bar bg-success" role="progressbar"
+           style="width: {{ progress_percent }}%"
+           aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+  </div>
+
+  {% if just_completed_course %}
+  <div class="alert alert-success d-flex align-items-center gap-2" role="alert">
+    🎉 <strong>Congratulations!</strong> You've completed <em>{{ course.course_title }}</em>!
+  </div>
+  {% endif %}
+
+  <!-- ── Description ──────────────────────────────────────────────────── -->
+  {% if lecture_selected.lecture_description %}
+  <div class="card border-0 bg-light rounded-3 p-4 mb-4">
+    <h5 class="fw-semibold mb-2">About this lecture</h5>
+    <div class="lecture-description-body">{{ lecture_selected.lecture_description|safe }}</div>
+  </div>
+  {% endif %}
+
+  <!-- ── Navigation ───────────────────────────────────────────────────── -->
+  <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+    {% if previous_lecture %}
+    <a href="{% url 'courses:lecture-selected' course.course_slug previous_lecture.lecture_slug %}"
+       class="btn btn-outline-secondary btn-sm">← Previous</a>
+    {% else %}
+    <span></span>
+    {% endif %}
+
+    {% if next_lecture %}
+    <a href="{% url 'courses:lecture-selected' course.course_slug next_lecture.lecture_slug %}"
+       class="btn btn-primary btn-sm">Next →</a>
+    {% else %}
+    <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-success btn-sm">
+      Finish Course ✓
+    </a>
+    {% endif %}
+  </div>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var btn = document.getElementById('markCompleteBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', function () {
+    var lectureId = btn.dataset.lectureId;
+    fetch("{% url 'courses:mark-complete' 0 %}".replace('/0/', '/' + lectureId + '/'), {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': '{{ csrf_token }}',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (data.completed) {
+        btn.textContent = '✓ Completed';
+        btn.classList.remove('btn-outline-success');
+        btn.classList.add('btn-success', 'disabled');
+        btn.disabled = true;
+      }
+    })
+    .catch(function (err) { console.error('mark-complete error', err); });
+  });
+})();
+</script>
+{% endblock %}

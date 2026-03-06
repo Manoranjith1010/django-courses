@@ -1,67 +1,76 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="LaunchDev - Learn to code with expert-led courses">
-    <meta name="author" content="LaunchDev Team">
-    {% block meta %}{% endblock meta %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="LaunchDev — Learn to code with expert-led courses">
+  {% block meta %}{% endblock %}
 
-    <title>
-      {% block title %}
-      LaunchDev - Online Learning
-      {% endblock title %}
-    </title>
+  <title>{% block title %}LaunchDev — Online Learning{% endblock %}</title>
 
-    <link rel="canonical" href="">
+  <!-- Bootstrap 5 -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="{% static 'images/favicon.jpg' %}" sizes="180x180">
+  <link rel="icon" href="{% static 'images/favicon.jpg' %}" sizes="32x32" type="image/jpg">
+  <meta name="theme-color" content="#2563EB">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" href="{% static 'images/favicon.jpg' %}" sizes="180x180">
-    <link rel="icon" href="{% static 'images/favicon.jpg' %}" sizes="32x32" type="image/jpg">
-    <link rel="icon" href="{% static 'images/favicon.jpg' %}" sizes="16x16" type="image/jpg">
-    <meta name="theme-color" content="#2563EB">
+  <!-- Lecture styles -->
+  <link href="{% static 'css/base.css' %}" rel="stylesheet">
+  <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+  <link href="{% static 'css/lecture-player.css' %}" rel="stylesheet">
+</head>
+<body class="lecture-page">
 
-    <!-- Custom styles for lecture player -->
-    <link href="{% static 'css/base.css'%}" rel="stylesheet">
-    <link href="{% static 'css/dashboard.css'%}" rel="stylesheet">
-    <link href="{% static 'css/lecture-player.css'%}" rel="stylesheet">
-  </head>
-  <body class="lecture-page">
-    <!-- Modern Bootstrap 5 Navbar -->
-    <nav class="navbar navbar-light bg-white sticky-top border-bottom py-2 lecture-navbar">
-      <div class="container-fluid px-3">
-        <a class="navbar-brand logo-brand d-flex align-items-center" href="{% url 'courses:home' %}">
-          <span class="brand-launch">Launch</span><span class="brand-dev">Dev</span>
-        </a>
-        <button class="navbar-toggler d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+  <!-- Lecture Navbar -->
+  <nav class="navbar bg-white sticky-top border-bottom py-2 lecture-navbar" style="z-index:1030;">
+    <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+
+      <div class="d-flex align-items-center gap-3">
+        <!-- Mobile sidebar toggle -->
+        <button class="navbar-toggler d-md-none border-0 p-1" type="button"
+                data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle sidebar">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <form method="post" action="{% url 'account_logout' %}">
-              {% csrf_token %}
-              {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-              {% endif %}
-              <button type="submit" class="btn-logout">Log Out</button>
-            </form>
-          </li>
-        </ul>
+
+        <!-- Logo -->
+        <a class="text-decoration-none" href="{% url 'courses:home' %}"
+           style="font-family:'Inter',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;">
+          <span class="brand-launch" style="color:#111827;">Launch</span><span class="brand-dev" style="color:#2563EB;">Dev</span>
+        </a>
       </div>
-    </nav>
 
-    <div class="lecture-layout">
-      {% block content %}
-      {% endblock content %}
+      <!-- Back to course link -->
+      <a href="{% url 'courses:course-detail' course.course_slug %}" class="text-muted small text-decoration-none d-none d-md-block">
+        ← Back to course
+      </a>
+
+      <!-- Logout -->
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+        {% endif %}
+        <button type="submit" class="btn-logout">Log Out</button>
+      </form>
+
     </div>
+  </nav>
 
-    <!-- Bootstrap 5 JS Bundle (no jQuery needed) -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
-    <script src="{% static 'js/dashboard.js'%}"></script>
-  </body>
+  <div class="lecture-layout">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+  <script>
+    if (typeof feather !== 'undefined') feather.replace();
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
 </html>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+import uuid
 
 # Create your models here.
 
@@ -40,6 +41,16 @@ class Course(models.Model):
     course_is_featured = models.BooleanField(default=False, verbose_name="Is Featured?")
     course_created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Date")
     course_updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Date")
+
+    # Instructor who owns/created this course
+    instructor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='taught_courses',
+        verbose_name='Instructor',
+    )
 
     # Meta for SEO
     seo_course_title = models.CharField(max_length=60, blank=True, null=True, verbose_name="SEO Course Title (60 Characters Long)")
@@ -175,5 +186,39 @@ class Review(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.course.course_title} ({self.rating}★)"
 
+class Certificate(models.Model):
+    """Completion certificate issued when a student finishes all lectures."""
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='certificates',
+        verbose_name='Student',
+    )
+    course = models.ForeignKey(
+        Course,
+        on_delete=models.CASCADE,
+        related_name='certificates',
+        verbose_name='Course',
+    )
+    issued_at = models.DateTimeField(auto_now_add=True, verbose_name='Issued At')
+    certificate_id = models.UUIDField(
+        default=uuid.uuid4,
+        unique=True,
+        editable=False,
+        verbose_name='Certificate ID',
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'course'],
+                name='unique_user_course_certificate',
+            )
+        ]
+        verbose_name = 'Certificate'
+        verbose_name_plural = 'Certificates'
+
+    def __str__(self):
+        return f"Certificate #{self.certificate_id} \u2014 {self.user.username} \u2192 {self.course.course_title}"
 
 

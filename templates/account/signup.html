@@ -1,84 +1,93 @@
 {% extends "account/base.html" %}
-
 {% load static %}
-
 {% load i18n %}
 {% load account socialaccount %}
 
-{% block title %}
-Sign Up | LaunchDev
-{% endblock title %}
+{% block title %}Create Account | LaunchDev{% endblock %}
 
-{% block content %}
-<div class="py-5 bg-light min-vh-100">
-    {% include 'partials/_messages.html' %}
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-5">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body p-4 p-md-5">
-                        <div class="text-center mb-4">
-                            <h3 class="fw-bold mb-1">Create your account</h3>
-                            <p class="text-muted">Start learning for free today</p>
-                        </div>
+{% block account_content %}
+<div class="min-vh-100 d-flex align-items-center py-5" style="background:#F8FAFC;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-9 col-lg-5">
 
-                        <form method="POST" action="{% url 'account_signup' %}">
-                            {% csrf_token %}
-                            
-                            {% if form.non_field_errors %}
-                            <div class="alert alert-danger py-2 small">
-                                {{ form.non_field_errors }}
-                            </div>
-                            {% endif %}
-
-                            {% for field in form %}
-                            <div class="mb-3">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                                <input type="{% if 'password' in field.name %}password{% elif 'email' in field.name %}email{% else %}text{% endif %}" 
-                                       class="form-control form-control-lg {% if field.errors %}is-invalid{% endif %}" 
-                                       id="{{ field.id_for_label }}" 
-                                       name="{{ field.name }}" 
-                                       value="{% if 'password' not in field.name %}{{ field.value|default:'' }}{% endif %}"
-                                       placeholder="{{ field.label }}" 
-                                       {% if field.field.required %}required{% endif %}>
-                                {% if field.errors %}
-                                <div class="invalid-feedback">{{ field.errors.0 }}</div>
-                                {% endif %}
-                                {% if field.help_text %}
-                                <div class="form-text small">{{ field.help_text|safe }}</div>
-                                {% endif %}
-                            </div>
-                            {% endfor %}
-                            
-                            {% if redirect_field_value %}
-                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                            {% endif %}
-
-                            <button class="btn btn-primary btn-lg w-100 mt-3" type="submit">Create Account</button>
-                        </form>
-
-                        {% get_providers as socialaccount_providers %}
-                        {% if socialaccount_providers %}
-                        <div class="position-relative my-4">
-                            <hr>
-                            <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">or</span>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <a href="{% provider_login_url "google" process="login" %}" class="btn btn-outline-secondary">
-                                <img src="{% static 'images/google.png' %}" alt="Google Logo" width="20" class="me-2" /> Continue with Google
-                            </a>
-                            <a href="{% provider_login_url "github" process="login" %}" class="btn btn-dark">
-                                <img src="{% static 'images/github.png' %}" alt="Github Logo" width="20" class="me-2" /> Continue with GitHub
-                            </a>
-                        </div>
-                        {% endif %}
-
-                        <p class="text-muted text-center small mt-4 mb-3">By signing up, you agree to our Terms of Use and Privacy Policy.</p>
-                        <p class="text-center mb-0">Already have an account? <a href="{% url 'account_login' %}" class="fw-semibold">Sign in</a></p>
-                    </div>
-                </div>
-            </div>
+        <!-- Logo -->
+        <div class="text-center mb-4">
+          <a href="{% url 'courses:home' %}" class="text-decoration-none" style="font-family:'Inter',sans-serif;font-size:1.6rem;font-weight:800;letter-spacing:-0.5px;">
+            <span style="color:#111827;">Launch</span><span style="color:#2563EB;">Dev</span>
+          </a>
         </div>
+
+        <div class="card border-0 shadow-sm" style="border-radius:16px;">
+          <div class="card-body p-4 p-md-5">
+
+            <h2 class="fw-bold mb-1 text-center" style="font-size:1.5rem;">Create your account</h2>
+            <p class="text-muted text-center mb-4 small">Start learning for free today</p>
+
+            <form method="POST" action="{% url 'account_signup' %}">
+              {% csrf_token %}
+
+              {% if form.non_field_errors %}
+              <div class="alert alert-danger py-2 small rounded-3">{{ form.non_field_errors }}</div>
+              {% endif %}
+
+              {% for field in form %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label fw-medium small">{{ field.label }}</label>
+                <input type="{% if 'password' in field.name %}password{% elif 'email' in field.name %}email{% else %}text{% endif %}"
+                       class="form-control {% if field.errors %}is-invalid{% endif %}"
+                       id="{{ field.id_for_label }}"
+                       name="{{ field.name }}"
+                       value="{% if 'password' not in field.name %}{{ field.value|default:'' }}{% endif %}"
+                       placeholder="{{ field.label }}"
+                       style="border-radius:10px;"
+                       {% if field.field.required %}required{% endif %}>
+                {% if field.errors %}
+                <div class="invalid-feedback">{{ field.errors.0 }}</div>
+                {% endif %}
+                {% if field.help_text %}
+                <div class="form-text small text-muted">{{ field.help_text|safe }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+
+              {% if redirect_field_value %}
+              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+              {% endif %}
+
+              <button class="btn btn-primary btn-lg w-100 fw-semibold mt-2" type="submit" style="border-radius:10px;">
+                Create Account
+              </button>
+            </form>
+
+            {% get_providers as socialaccount_providers %}
+            {% if socialaccount_providers %}
+            <div class="position-relative my-4">
+              <hr>
+              <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">or</span>
+            </div>
+            <div class="d-grid gap-2">
+              <a href="{% provider_login_url 'google' process='login' %}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2" style="border-radius:10px;">
+                <img src="{% static 'images/google.png' %}" alt="Google" width="18"> Continue with Google
+              </a>
+              <a href="{% provider_login_url 'github' process='login' %}" class="btn btn-dark d-flex align-items-center justify-content-center gap-2" style="border-radius:10px;">
+                <img src="{% static 'images/github.png' %}" alt="GitHub" width="18"> Continue with GitHub
+              </a>
+            </div>
+            {% endif %}
+
+            <p class="text-muted text-center small mt-4 mb-2">
+              By signing up, you agree to our <a href="#" class="text-primary text-decoration-none">Terms of Use</a> and <a href="#" class="text-primary text-decoration-none">Privacy Policy</a>.
+            </p>
+            <p class="text-center mb-0 small">
+              Already have an account? <a href="{% url 'account_login' %}" class="fw-semibold text-primary text-decoration-none">Sign in</a>
+            </p>
+
+          </div>
+        </div>
+
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

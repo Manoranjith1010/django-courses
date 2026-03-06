@@ -1,31 +1,40 @@
 <!-- Reusable Course Card Component -->
-<!-- Usage: {% include 'partials/_course_card.html' with course=course show_badge=True %} -->
+{# Usage: {% include 'partials/_course_card.html' with course=course show_badge=True show_featured=True %} #}
+{% comment %}
+  NOTE: forloop.first is NOT available inside included partials.
+  Pass show_featured=True explicitly from the parent loop's first iteration.
+{% endcomment %}
 
 <div class="card course-card border-0 shadow-sm h-100 w-100 overflow-hidden">
   <a href="{% url 'courses:course-detail' course.course_slug %}" class="text-decoration-none text-dark">
     {% if course.course_image %}
     <div class="overflow-hidden">
-      <img src="{{ course.course_image.url }}" 
-           class="card-img-top course-card-image" 
+      <img src="{{ course.course_image.url }}"
+           class="card-img-top course-card-image"
            alt="{{ course.course_title }}"
            loading="lazy">
     </div>
     {% else %}
-    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 180px;">
-      <span class="text-white h5 mb-0">{{ course.course_title|truncatewords:2 }}</span>
+    <div class="card-img-top d-flex align-items-center justify-content-center"
+         style="height:180px;background:linear-gradient(135deg,#667eea,#764ba2);">
+      <span class="text-white fw-bold fs-5">{{ course.course_title|truncatewords:2 }}</span>
     </div>
     {% endif %}
   </a>
-  <div class="card-body p-3 d-flex flex-column">
-    {% if show_badge and forloop.first %}
+
+  <div class="card-body p-3 d-flex flex-column position-relative">
+    {% if show_badge and show_featured %}
     <span class="badge bg-warning text-dark course-badge">Featured</span>
     {% endif %}
-    <h5 class="card-title mb-2">{{ course.course_title }}</h5>
-    <p class="card-text text-muted small mb-3">
+
+    <h5 class="card-title mb-2 fw-semibold" style="font-size:0.95rem;">{{ course.course_title }}</h5>
+
+    <p class="card-text text-muted small mb-3 flex-grow-1">
       {{ course.course_description|truncatewords:15|default:"Learn essential skills with hands-on projects and expert guidance." }}
     </p>
+
     <div class="d-flex justify-content-between align-items-center mt-auto">
-      <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-sm btn-primary">
+      <a href="{% url 'courses:course-detail' course.course_slug %}" class="btn btn-sm btn-primary px-3">
         View Course
       </a>
       <small class="text-muted">{{ course.course_created_at|timesince }} ago</small>

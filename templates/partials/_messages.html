@@ -1,23 +1,27 @@
-<!-- Toast Notifications (Bootstrap 4) -->
 {% if messages %}
-<div class="toast-container position-fixed" style="top: 1rem; right: 1rem; z-index: 1100;">
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
   {% for message in messages %}
-    <div class="toast align-items-center text-white {% if message.tags == 'error' %}bg-danger{% elif message.tags == 'success' %}bg-success{% elif message.tags == 'warning' %}bg-warning text-dark{% else %}bg-primary{% endif %} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true" data-delay="5000">
+    <div class="toast align-items-center text-white border-0
+      {% if message.tags == 'error' or message.tags == 'danger' %}bg-danger
+      {% elif message.tags == 'success' %}bg-success
+      {% elif message.tags == 'warning' %}bg-warning text-dark
+      {% else %}bg-primary{% endif %}"
+      role="alert" aria-live="assertive" aria-atomic="true"
+      data-bs-autohide="true" data-bs-delay="5000">
       <div class="d-flex">
-        <div class="toast-body">
-          {{ message }}
-        </div>
-        <button type="button" class="ml-2 mb-1 close {% if message.tags != 'warning' %}text-white{% endif %}" data-dismiss="toast" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <div class="toast-body fw-medium">{{ message }}</div>
+        <button type="button"
+                class="btn-close {% if message.tags != 'warning' %}btn-close-white{% endif %} me-2 m-auto"
+                data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
     </div>
   {% endfor %}
 </div>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    $('.toast').toast('show');
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.toast').forEach(function (el) {
+    new bootstrap.Toast(el).show();
   });
-  });
+});
 </script>
 {% endif %}

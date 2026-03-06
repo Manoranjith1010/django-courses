@@ -19,11 +19,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=$!k4_-j55pd3i5ku^0$%h%wp^q)6^#xva$gvf(4*ce)i*99mv'
+# Set SECRET_KEY in your .env file — never hard-code in source control!
+SECRET_KEY = os.getenv('SECRET_KEY', '=$!k4_-j55pd3i5ku^0$%h%wp^q)6^#xva$gvf(4*ce)i*99mv')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# WARNING: ALLOWED_HOSTS = ['*'] is only acceptable for local development.
+# For production set this to your actual domain, e.g. ['launchdev.com', 'www.launchdev.com']
 ALLOWED_HOSTS = ['*']
 
 
@@ -120,14 +123,15 @@ DATABASES = {
 
 
 
+# PRODUCTION: set DB_NAME, DB_USER, DB_PASSWORD in your .env — never commit credentials!
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'coursedb',          # Make sure you created this in MySQL!
-        'USER': 'root',              # Your MySQL username
-        'PASSWORD': 'root',  # Your MySQL password
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME', 'coursedb'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
@@ -213,7 +217,7 @@ ACCOUNT_RATE_LIMITS = {
     'login_failed': '5/5m',  # 5 attempts per 5 minutes
 }
 
-# Email verification (set to 'mandatory' for production)
+# NOTE: change to 'mandatory' in production to prevent bot registrations
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Provider specific settings

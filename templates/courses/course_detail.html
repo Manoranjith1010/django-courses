@@ -41,7 +41,7 @@
 
           {% if course.course_description %}
           <h2 class="course-section-title">Course Overview</h2>
-          <p>{{ course.course_description }}</p>
+          <div class="course-overview-content">{{ course.course_description|safe }}</div>
           {% endif %}
 
           <!-- What You'll Learn — pulled from course model if available, else generic -->
